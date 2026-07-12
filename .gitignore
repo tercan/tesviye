@@ -1,0 +1,7 @@
+# Xcode
+DerivedData/
+*.xcuserstate
+xcuserdata/
+
+# Internal project documentation
+documents/

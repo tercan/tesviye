@@ -1,0 +1,108 @@
+"app.name" = "Tesviye";
+
+"action.cancel" = "Cancel";
+"action.done" = "Done";
+
+"toolbar.info.help" = "Show application information";
+"window.close.help" = "Close the Tesviye window";
+"window.minimize.help" = "Minimize the Tesviye window";
+"appearance.system.help" = "System appearance is active. Switch to light appearance.";
+"appearance.light.help" = "Light appearance is active. Switch to dark appearance.";
+"appearance.dark.help" = "Dark appearance is active. Switch to system appearance.";
+
+"selection.empty.title" = "No images selected";
+"selection.empty.subtitle" = "Drop images here or choose files.";
+"selection.count" = "%ld images selected";
+"selection.totalSize" = "Total %@";
+"selection.choose" = "Choose Images";
+"selection.add" = "Add";
+"selection.showList" = "Show List";
+"selection.clear" = "Clear";
+"selection.remove.help" = "Remove image from the list";
+"selection.import.error.title" = "Images Could Not Be Added";
+"selection.import.error" = "The selected files could not be accessed. Try selecting the files again.";
+
+"preset.title" = "Preset Size";
+"preset.custom" = "Custom size";
+
+"dimensions.title" = "Size";
+"dimensions.width" = "Width";
+"dimensions.height" = "Height";
+"dimensions.pixels.short" = "px";
+"dimensions.swap.help" = "Swap width and height";
+"dimensions.aspect.locked.help" = "Aspect ratio is preserved. Unlock the aspect ratio.";
+"dimensions.aspect.unlocked.help" = "Aspect ratio is free. Lock the aspect ratio.";
+
+"upscale.title" = "Upscale images";
+"upscale.off.description" = "Smaller images stay at their original size.";
+"upscale.on.description" = "Smaller images are enlarged to the target size.";
+"overwrite.title" = "Overwrite";
+"overwrite.off.description" = "The original is preserved; a copy is saved in the same folder.";
+"overwrite.off.customLocation.description" = "The original is preserved; a copy is saved in the selected folder.";
+"overwrite.on.description" = "Original images in the same format are replaced safely.";
+"overwrite.confirmation.title" = "Replace the original images?";
+"overwrite.confirmation.message" = "Images in the same format will be replaced safely. When the format changes, the source is preserved and a new file is created.";
+"overwrite.confirmation.action" = "Replace and Continue";
+
+"format.title" = "Format";
+"quality.title" = "Quality";
+"quality.mode.automatic.help" = "Automatic quality is active. Switch to manual adjustment. Automatic mode selects balanced compression for the source and target size, then adjusts quality in steps if same-format output grows.";
+"quality.mode.manual.help" = "Manual quality is active. Switch to automatic mode.";
+
+"advanced.title" = "Advanced Settings";
+"advanced.expand.help" = "Show advanced settings";
+"advanced.collapse.help" = "Hide advanced settings";
+"advanced.suffix.title" = "Filename suffix";
+"advanced.suffix.placeholder" = "_1920x1080";
+"advanced.suffix.example.format" = "Example: %@";
+"advanced.suffix.sampleBase" = "photo";
+"advanced.location.title" = "Save location";
+"advanced.location.sameFolder" = "Same folder as original";
+"advanced.location.change" = "Change…";
+"advanced.location.change.help" = "Choose the folder where new images will be saved";
+"advanced.location.reset" = "Default";
+"advanced.location.reset.help" = "Save new images in the same folder as the original again";
+"advanced.location.error.title" = "Folder Could Not Be Selected";
+"advanced.location.error" = "The selected folder could not be accessed. Try choosing another folder.";
+"advanced.metadata.preserve" = "Preserve metadata";
+"advanced.metadata.removeLocation" = "Remove location information";
+"advanced.jpegBackground.title" = "JPEG background";
+"advanced.jpegBackground.white" = "White";
+"advanced.jpegBackground.help" = "Choose the color used to fill transparent areas in JPEG output.";
+
+"processing.start" = "Resize";
+"processing.cancel" = "Cancel Processing";
+"processing.status.empty" = "Add images to get started";
+"processing.status.ready" = "Images are ready to process";
+"processing.status.readyNoUpscale" = "Smaller images will not be enlarged";
+"processing.status.active" = "Processing images";
+"processing.status.cancelling" = "Finishing safe cancellation";
+"processing.progress.format" = "%ld / %ld processed";
+"processing.error.cannotRead" = "The image could not be read or the file is damaged.";
+"processing.error.invalidDimensions" = "The target size is outside the safe limits.";
+"processing.error.unsupportedFormat" = "The selected output format cannot be written on this version of macOS.";
+"processing.error.cannotWrite" = "The output could not be written to the selected folder. Check the folder’s write permissions and retry.";
+"processing.error.verification" = "The generated file could not be verified; the source file was preserved.";
+"processing.error.generic" = "An unexpected error occurred while processing the image.";
+
+"results.title" = "Processing Complete";
+"results.summary.format" = "%ld succeeded, %ld failed.";
+"results.reveal" = "Show in Finder";
+"results.clearList" = "Clear List";
+"results.clearList.help" = "Removes selected images and processing results from the list without deleting generated files.";
+
+"menu.open" = "Open Tesviye";
+"menu.quit" = "Quit Tesviye";
+"quit.processing.title" = "Processing is in progress";
+"quit.processing.message" = "Quitting will cancel the current operation and remove unfinished temporary files.";
+"quit.processing.confirm" = "Cancel Processing and Quit";
+
+"about.version.format" = "Version %@";
+"about.developer.label" = "Developer";
+"about.developer.value" = "Tercan Keskin";
+"about.website.label" = "Website";
+"about.website.value" = "https://tercan.github.io/tesviye/";
+"about.license.label" = "License";
+"about.license.value" = "GPL-2.0";
+"about.privacy" = "Your images are processed only on this Mac.";
+"about.copyright" = "© 2026 Tercan Keskin";

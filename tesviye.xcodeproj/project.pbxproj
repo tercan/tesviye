@@ -6,20 +6,101 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		CC9AF78A3002EA5400FF6680 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CC9AF7873002EA5400FF6680 /* Assets.xcassets */; };
+		CC9AF78B3002EA5400FF6680 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC9AF7883002EA5400FF6680 /* ContentView.swift */; };
+		CC9AF78C3002EA5400FF6680 /* tesviyeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC9AF7893002EA5400FF6680 /* tesviyeApp.swift */; };
+		D10000013003100000FF6680 /* AppModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10000113003100000FF6680 /* AppModels.swift */; };
+		D10000023003100000FF6680 /* PreferencesStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10000123003100000FF6680 /* PreferencesStore.swift */; };
+		D10000033003100000FF6680 /* ImageResizeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10000133003100000FF6680 /* ImageResizeService.swift */; };
+		D10000043003100000FF6680 /* MainViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10000143003100000FF6680 /* MainViewModel.swift */; };
+		D10000053003100000FF6680 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10000153003100000FF6680 /* AboutView.swift */; };
+		D10000063003100000FF6680 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = D10000183003100000FF6680 /* Localizable.strings */; };
+		D20000023003200000FF6680 /* TesviyeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D20000033003200000FF6680 /* TesviyeTests.swift */; };
+		D30000013003300000FF6680 /* libwebp in Frameworks */ = {isa = PBXBuildFile; productRef = D30000023003300000FF6680 /* libwebp */; };
+		D30000043003300000FF6680 /* ThirdPartyNotices.txt in Resources */ = {isa = PBXBuildFile; fileRef = D30000053003300000FF6680 /* ThirdPartyNotices.txt */; };
+		E40000013003400000FF6680 /* ActionRequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = E40000213003400000FF6680 /* ActionRequestHandler.swift */; };
+		E40000023003400000FF6680 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = E40000413003400000FF6680 /* InfoPlist.strings */; };
+		E40000033003400000FF6680 /* TesviyeFinderAction.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = E40000203003400000FF6680 /* TesviyeFinderAction.appex */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		E40000043003400000FF6680 /* ExternalImageOpenCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E40000253003400000FF6680 /* ExternalImageOpenCoordinator.swift */; };
+		E40000053003400000FF6680 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E40000263003400000FF6680 /* Assets.xcassets */; };
+		F50000013003500000FF6680 /* FinderImportPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = F50000213003500000FF6680 /* FinderImportPayload.swift */; };
+		F50000023003500000FF6680 /* FinderImportPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = F50000213003500000FF6680 /* FinderImportPayload.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		D200000C3003200000FF6680 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CC9AF77130028E6300FF6680 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CC9AF77830028E6300FF6680;
+			remoteInfo = tesviye;
+		};
+		E40000103003400000FF6680 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CC9AF77130028E6300FF6680 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E40000503003400000FF6680;
+			remoteInfo = TesviyeFinderAction;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		E40000623003400000FF6680 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				E40000033003400000FF6680 /* TesviyeFinderAction.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		CC9AF77930028E6300FF6680 /* tesviye.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = tesviye.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CC9AF7873002EA5400FF6680 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		CC9AF7883002EA5400FF6680 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		CC9AF7893002EA5400FF6680 /* tesviyeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = tesviyeApp.swift; sourceTree = "<group>"; };
+		D10000113003100000FF6680 /* AppModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModels.swift; sourceTree = "<group>"; };
+		D10000123003100000FF6680 /* PreferencesStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesStore.swift; sourceTree = "<group>"; };
+		D10000133003100000FF6680 /* ImageResizeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageResizeService.swift; sourceTree = "<group>"; };
+		D10000143003100000FF6680 /* MainViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewModel.swift; sourceTree = "<group>"; };
+		D10000153003100000FF6680 /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
+		D10000163003100000FF6680 /* tr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = tr; path = tr.lproj/Localizable.strings; sourceTree = "<group>"; };
+		D10000173003100000FF6680 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		D20000013003200000FF6680 /* TesviyeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TesviyeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		D20000033003200000FF6680 /* TesviyeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TesviyeTests.swift; sourceTree = "<group>"; };
+		D30000053003300000FF6680 /* ThirdPartyNotices.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = ThirdPartyNotices.txt; sourceTree = "<group>"; };
+		E40000203003400000FF6680 /* TesviyeFinderAction.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = TesviyeFinderAction.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		E40000213003400000FF6680 /* ActionRequestHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionRequestHandler.swift; sourceTree = "<group>"; };
+		E40000223003400000FF6680 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E40000233003400000FF6680 /* tr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = tr; path = tr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		E40000243003400000FF6680 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		E40000253003400000FF6680 /* ExternalImageOpenCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalImageOpenCoordinator.swift; sourceTree = "<group>"; };
+		E40000263003400000FF6680 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		F50000213003500000FF6680 /* FinderImportPayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinderImportPayload.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
-
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		CC9AF77B30028E6300FF6680 /* tesviye */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = tesviye;
-			sourceTree = "<group>";
-		};
-/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		CC9AF77630028E6300FF6680 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D30000013003300000FF6680 /* libwebp in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D20000063003200000FF6680 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E40000303003400000FF6680 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -32,8 +113,21 @@
 		CC9AF77030028E6300FF6680 = {
 			isa = PBXGroup;
 			children = (
-				CC9AF77B30028E6300FF6680 /* tesviye */,
 				CC9AF77A30028E6300FF6680 /* Products */,
+				CC9AF7873002EA5400FF6680 /* Assets.xcassets */,
+				D10000113003100000FF6680 /* AppModels.swift */,
+				D10000123003100000FF6680 /* PreferencesStore.swift */,
+				D10000133003100000FF6680 /* ImageResizeService.swift */,
+				D10000143003100000FF6680 /* MainViewModel.swift */,
+				E40000253003400000FF6680 /* ExternalImageOpenCoordinator.swift */,
+				F50000213003500000FF6680 /* FinderImportPayload.swift */,
+				D30000053003300000FF6680 /* ThirdPartyNotices.txt */,
+				D10000153003100000FF6680 /* AboutView.swift */,
+				CC9AF7883002EA5400FF6680 /* ContentView.swift */,
+				CC9AF7893002EA5400FF6680 /* tesviyeApp.swift */,
+				D10000183003100000FF6680 /* Localizable.strings */,
+				D20000043003200000FF6680 /* TesviyeTests */,
+				E40000403003400000FF6680 /* FinderAction */,
 			);
 			sourceTree = "<group>";
 		};
@@ -41,8 +135,29 @@
 			isa = PBXGroup;
 			children = (
 				CC9AF77930028E6300FF6680 /* tesviye.app */,
+				D20000013003200000FF6680 /* TesviyeTests.xctest */,
+				E40000203003400000FF6680 /* TesviyeFinderAction.appex */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		D20000043003200000FF6680 /* TesviyeTests */ = {
+			isa = PBXGroup;
+			children = (
+				D20000033003200000FF6680 /* TesviyeTests.swift */,
+			);
+			path = TesviyeTests;
+			sourceTree = "<group>";
+		};
+		E40000403003400000FF6680 /* FinderAction */ = {
+			isa = PBXGroup;
+			children = (
+				E40000213003400000FF6680 /* ActionRequestHandler.swift */,
+				E40000263003400000FF6680 /* Assets.xcassets */,
+				E40000223003400000FF6680 /* Info.plist */,
+				E40000413003400000FF6680 /* InfoPlist.strings */,
+			);
+			path = FinderAction;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -55,20 +170,58 @@
 				CC9AF77530028E6300FF6680 /* Sources */,
 				CC9AF77630028E6300FF6680 /* Frameworks */,
 				CC9AF77730028E6300FF6680 /* Resources */,
+				E40000623003400000FF6680 /* Embed App Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				E40000703003400000FF6680 /* PBXTargetDependency */,
+			);
+			name = tesviye;
+			packageProductDependencies = (
+				D30000023003300000FF6680 /* libwebp */,
+			);
+			productName = tesviye;
+			productReference = CC9AF77930028E6300FF6680 /* tesviye.app */;
+			productType = "com.apple.product-type.application";
+		};
+		D20000083003200000FF6680 /* TesviyeTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D200000B3003200000FF6680 /* Build configuration list for PBXNativeTarget "TesviyeTests" */;
+			buildPhases = (
+				D20000053003200000FF6680 /* Sources */,
+				D20000063003200000FF6680 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D200000D3003200000FF6680 /* PBXTargetDependency */,
+			);
+			name = TesviyeTests;
+			packageProductDependencies = (
+			);
+			productName = TesviyeTests;
+			productReference = D20000013003200000FF6680 /* TesviyeTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		E40000503003400000FF6680 /* TesviyeFinderAction */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E40000823003400000FF6680 /* Build configuration list for PBXNativeTarget "TesviyeFinderAction" */;
+			buildPhases = (
+				E40000613003400000FF6680 /* Sources */,
+				E40000303003400000FF6680 /* Frameworks */,
+				E40000603003400000FF6680 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			fileSystemSynchronizedGroups = (
-				CC9AF77B30028E6300FF6680 /* tesviye */,
-			);
-			name = tesviye;
+			name = TesviyeFinderAction;
 			packageProductDependencies = (
 			);
-			productName = tesviye;
-			productReference = CC9AF77930028E6300FF6680 /* tesviye.app */;
-			productType = "com.apple.product-type.application";
+			productName = TesviyeFinderAction;
+			productReference = E40000203003400000FF6680 /* TesviyeFinderAction.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -83,6 +236,13 @@
 					CC9AF77830028E6300FF6680 = {
 						CreatedOnToolsVersion = 26.5;
 					};
+					D20000083003200000FF6680 = {
+						CreatedOnToolsVersion = 26.5;
+						TestTargetID = CC9AF77830028E6300FF6680;
+					};
+					E40000503003400000FF6680 = {
+						CreatedOnToolsVersion = 26.5;
+					};
 				};
 			};
 			buildConfigurationList = CC9AF77430028E6300FF6680 /* Build configuration list for PBXProject "tesviye" */;
@@ -90,16 +250,22 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				tr,
 				Base,
 			);
 			mainGroup = CC9AF77030028E6300FF6680;
 			minimizedProjectReferenceProxies = 1;
 			preferredProjectObjectVersion = 77;
 			productRefGroup = CC9AF77A30028E6300FF6680 /* Products */;
+			packageReferences = (
+				D30000033003300000FF6680 /* XCRemoteSwiftPackageReference "libwebp-Xcode" */,
+			);
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				CC9AF77830028E6300FF6680 /* tesviye */,
+				D20000083003200000FF6680 /* TesviyeTests */,
+				E40000503003400000FF6680 /* TesviyeFinderAction */,
 			);
 		};
 /* End PBXProject section */
@@ -109,6 +275,18 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CC9AF78A3002EA5400FF6680 /* Assets.xcassets in Resources */,
+				D10000063003100000FF6680 /* Localizable.strings in Resources */,
+				D30000043003300000FF6680 /* ThirdPartyNotices.txt in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E40000603003400000FF6680 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E40000053003400000FF6680 /* Assets.xcassets in Resources */,
+				E40000023003400000FF6680 /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -119,10 +297,89 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D10000013003100000FF6680 /* AppModels.swift in Sources */,
+				D10000023003100000FF6680 /* PreferencesStore.swift in Sources */,
+				D10000033003100000FF6680 /* ImageResizeService.swift in Sources */,
+				D10000043003100000FF6680 /* MainViewModel.swift in Sources */,
+				E40000043003400000FF6680 /* ExternalImageOpenCoordinator.swift in Sources */,
+				F50000013003500000FF6680 /* FinderImportPayload.swift in Sources */,
+				D10000053003100000FF6680 /* AboutView.swift in Sources */,
+				CC9AF78B3002EA5400FF6680 /* ContentView.swift in Sources */,
+				CC9AF78C3002EA5400FF6680 /* tesviyeApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D20000053003200000FF6680 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D20000023003200000FF6680 /* TesviyeTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E40000613003400000FF6680 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E40000013003400000FF6680 /* ActionRequestHandler.swift in Sources */,
+				F50000023003500000FF6680 /* FinderImportPayload.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		D200000D3003200000FF6680 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CC9AF77830028E6300FF6680 /* tesviye */;
+			targetProxy = D200000C3003200000FF6680 /* PBXContainerItemProxy */;
+		};
+		E40000703003400000FF6680 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E40000503003400000FF6680 /* TesviyeFinderAction */;
+			targetProxy = E40000103003400000FF6680 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		D10000183003100000FF6680 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				D10000163003100000FF6680 /* tr */,
+				D10000173003100000FF6680 /* en */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+		E40000413003400000FF6680 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				E40000233003400000FF6680 /* tr */,
+				E40000243003400000FF6680 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		D30000033003300000FF6680 /* XCRemoteSwiftPackageReference "libwebp-Xcode" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SDWebImage/libwebp-Xcode.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.5.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		D30000023003300000FF6680 /* libwebp */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D30000033003300000FF6680 /* XCRemoteSwiftPackageReference "libwebp-Xcode" */;
+			productName = libwebp;
+		};
+/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCBuildConfiguration section */
 		CC9AF78230028E6500FF6680 /* Debug */ = {
@@ -246,14 +503,16 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 664P9XM3DQ;
-				ENABLE_APP_SANDBOX = YES;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
-				ENABLE_USER_SELECTED_FILES = readonly;
-				GENERATE_INFOPLIST_FILE = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "Tesviye-Info.plist";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -267,20 +526,21 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 26.5;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 26.5;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = gupse.tesviye;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				REGISTER_APP_GROUPS = YES;
 				SDKROOT = auto;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SUPPORTED_PLATFORMS = macosx;
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2,7";
 				XROS_DEPLOYMENT_TARGET = 26.5;
 			};
 			name = Debug;
@@ -290,14 +550,15 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 664P9XM3DQ;
-				ENABLE_APP_SANDBOX = YES;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
-				ENABLE_USER_SELECTED_FILES = readonly;
-				GENERATE_INFOPLIST_FILE = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "Tesviye-Info.plist";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -311,21 +572,117 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 26.5;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 26.5;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = gupse.tesviye;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				REGISTER_APP_GROUPS = YES;
 				SDKROOT = auto;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SUPPORTED_PLATFORMS = macosx;
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2,7";
 				XROS_DEPLOYMENT_TARGET = 26.5;
+			};
+			name = Release;
+		};
+		D20000093003200000FF6680 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				PRODUCT_BUNDLE_IDENTIFIER = gupse.TesviyeTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/tesviye.app/Contents/MacOS/tesviye";
+			};
+			name = Debug;
+		};
+		D200000A3003200000FF6680 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				PRODUCT_BUNDLE_IDENTIFIER = gupse.TesviyeTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/tesviye.app/Contents/MacOS/tesviye";
+			};
+			name = Release;
+		};
+		E40000803003400000FF6680 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = FinderAction/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = gupse.tesviye.finder-action;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = macosx;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		E40000813003400000FF6680 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = FinderAction/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = gupse.tesviye.finder-action;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = macosx;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};
@@ -346,6 +703,24 @@
 			buildConfigurations = (
 				CC9AF78530028E6500FF6680 /* Debug */,
 				CC9AF78630028E6500FF6680 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D200000B3003200000FF6680 /* Build configuration list for PBXNativeTarget "TesviyeTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D20000093003200000FF6680 /* Debug */,
+				D200000A3003200000FF6680 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E40000823003400000FF6680 /* Build configuration list for PBXNativeTarget "TesviyeFinderAction" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E40000803003400000FF6680 /* Debug */,
+				E40000813003400000FF6680 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

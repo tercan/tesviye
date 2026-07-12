@@ -1,0 +1,108 @@
+"app.name" = "Tesviye";
+
+"action.cancel" = "Vazgeç";
+"action.done" = "Tamam";
+
+"toolbar.info.help" = "Uygulama bilgilerini göster";
+"window.close.help" = "Tesviye penceresini kapat";
+"window.minimize.help" = "Tesviye penceresini küçült";
+"appearance.system.help" = "Sistem teması etkin. Açık temaya geç.";
+"appearance.light.help" = "Açık tema etkin. Koyu temaya geç.";
+"appearance.dark.help" = "Koyu tema etkin. Sistem temasına geç.";
+
+"selection.empty.title" = "Görsel seçilmedi";
+"selection.empty.subtitle" = "Görselleri buraya sürükleyin veya dosya seçin.";
+"selection.count" = "%ld görsel seçildi";
+"selection.totalSize" = "Toplam %@";
+"selection.choose" = "Görsel Seç";
+"selection.add" = "Ekle";
+"selection.showList" = "Listeyi Gör";
+"selection.clear" = "Temizle";
+"selection.remove.help" = "Görseli listeden kaldır";
+"selection.import.error.title" = "Görseller Eklenemedi";
+"selection.import.error" = "Seçilen dosyalara erişilemedi. Dosyaları yeniden seçmeyi deneyin.";
+
+"preset.title" = "Hazır Boyut";
+"preset.custom" = "Özel boyut";
+
+"dimensions.title" = "Boyut";
+"dimensions.width" = "Genişlik";
+"dimensions.height" = "Yükseklik";
+"dimensions.pixels.short" = "px";
+"dimensions.swap.help" = "Genişlik ve yüksekliği takas et";
+"dimensions.aspect.locked.help" = "En-boy oranı korunuyor. Oran kilidini aç.";
+"dimensions.aspect.unlocked.help" = "En-boy oranı serbest. Oran kilidini kapat.";
+
+"upscale.title" = "Görseli büyüt";
+"upscale.off.description" = "Küçük görseller orijinal ölçüsünde kalır.";
+"upscale.on.description" = "Küçük görseller hedef ölçüye kadar büyütülür.";
+"overwrite.title" = "Üzerine yaz";
+"overwrite.off.description" = "Orijinal korunur; kopya aynı klasöre kaydedilir.";
+"overwrite.off.customLocation.description" = "Orijinal korunur; kopya seçilen klasöre kaydedilir.";
+"overwrite.on.description" = "Aynı formattaki orijinal görseller güvenli biçimde değiştirilir.";
+"overwrite.confirmation.title" = "Orijinal görseller değiştirilsin mi?";
+"overwrite.confirmation.message" = "Aynı formattaki görseller güvenli biçimde değiştirilecek. Format değişirse kaynak korunarak yeni bir dosya oluşturulacak.";
+"overwrite.confirmation.action" = "Değiştir ve Devam Et";
+
+"format.title" = "Format";
+"quality.title" = "Kalite";
+"quality.mode.automatic.help" = "Otomatik kalite etkin. Manuel ayara geç. Otomatik mod, kaynak ve hedef boyuta göre dengeli sıkıştırma seçer; aynı formatta çıktı büyürse kaliteyi kademeli olarak ayarlar.";
+"quality.mode.manual.help" = "Manuel kalite etkin. Otomatik moda geç.";
+
+"advanced.title" = "Gelişmiş Ayarlar";
+"advanced.expand.help" = "Gelişmiş ayarları göster";
+"advanced.collapse.help" = "Gelişmiş ayarları gizle";
+"advanced.suffix.title" = "Dosya adı son eki";
+"advanced.suffix.placeholder" = "_1920x1080";
+"advanced.suffix.example.format" = "Örnek: %@";
+"advanced.suffix.sampleBase" = "foto";
+"advanced.location.title" = "Kayıt konumu";
+"advanced.location.sameFolder" = "Orijinalle aynı klasör";
+"advanced.location.change" = "Değiştir…";
+"advanced.location.change.help" = "Yeni görsellerin kaydedileceği klasörü seç";
+"advanced.location.reset" = "Varsayılan";
+"advanced.location.reset.help" = "Yeni görselleri yeniden orijinalle aynı klasöre kaydet";
+"advanced.location.error.title" = "Klasör Seçilemedi";
+"advanced.location.error" = "Seçilen klasöre erişilemedi. Başka bir klasör seçmeyi deneyin.";
+"advanced.metadata.preserve" = "Metadata’yı koru";
+"advanced.metadata.removeLocation" = "Konum bilgisini kaldır";
+"advanced.jpegBackground.title" = "JPEG arka planı";
+"advanced.jpegBackground.white" = "Beyaz";
+"advanced.jpegBackground.help" = "JPEG çıktısındaki şeffaf alanları dolduracak rengi seçin.";
+
+"processing.start" = "Yeniden Boyutlandır";
+"processing.cancel" = "İşlemi İptal Et";
+"processing.status.empty" = "Başlamak için görsel ekleyin";
+"processing.status.ready" = "Görseller işlenmeye hazır";
+"processing.status.readyNoUpscale" = "Küçük görseller büyütülmeyecek";
+"processing.status.active" = "Görseller işleniyor";
+"processing.status.cancelling" = "Güvenli iptal tamamlanıyor";
+"processing.progress.format" = "%ld / %ld işlendi";
+"processing.error.cannotRead" = "Görsel okunamadı veya dosya bozuk.";
+"processing.error.invalidDimensions" = "Hedef boyut güvenli sınırların dışında.";
+"processing.error.unsupportedFormat" = "Seçilen çıktı formatı bu macOS sürümünde yazılamıyor.";
+"processing.error.cannotWrite" = "Çıktı seçilen klasöre yazılamadı. Klasörün yazma izinlerini kontrol edip tekrar deneyin.";
+"processing.error.verification" = "Oluşturulan dosya doğrulanamadı; kaynak dosya korunmuştur.";
+"processing.error.generic" = "Görsel işlenirken beklenmeyen bir hata oluştu.";
+
+"results.title" = "İşlem Tamamlandı";
+"results.summary.format" = "%ld başarılı, %ld başarısız dosya.";
+"results.reveal" = "Finder’da Göster";
+"results.clearList" = "Listeyi Temizle";
+"results.clearList.help" = "Seçili görselleri ve işlem sonuçlarını listeden kaldırır; oluşturulan dosyaları silmez.";
+
+"menu.open" = "Tesviye’yi Aç";
+"menu.quit" = "Tesviye’den Çık";
+"quit.processing.title" = "İşlem devam ediyor";
+"quit.processing.message" = "Çıkarsanız devam eden işlem iptal edilecek ve tamamlanmamış geçici dosyalar temizlenecek.";
+"quit.processing.confirm" = "İşlemi İptal Et ve Çık";
+
+"about.version.format" = "Sürüm %@";
+"about.developer.label" = "Geliştirici";
+"about.developer.value" = "Tercan Keskin";
+"about.website.label" = "Web sitesi";
+"about.website.value" = "https://tercan.github.io/tesviye/";
+"about.license.label" = "Lisans";
+"about.license.value" = "GPL-2.0";
+"about.privacy" = "Görselleriniz yalnızca bu Mac üzerinde işlenir.";
+"about.copyright" = "© 2026 Tercan Keskin";
