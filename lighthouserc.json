@@ -2,7 +2,7 @@
   "ci": {
     "collect": {
       "staticDistDir": "./docs",
-      "numberOfRuns": 1,
+      "numberOfRuns": 3,
       "settings": {
         "budgetPath": "./lighthouse-budget.json",
         "skipAudits": ["robots-txt"]
