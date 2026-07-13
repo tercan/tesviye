@@ -17,7 +17,7 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Resolve Swift packages
         run: xcodebuild -resolvePackageDependencies -project tesviye.xcodeproj -scheme tesviye
@@ -55,12 +55,13 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 24
+          package-manager-cache: false
 
       - name: Validate local references and budgets
         run: node scripts/validate-site.mjs
@@ -79,7 +80,7 @@ jobs:
 
       - name: Upload Lighthouse reports
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: lighthouse-reports
           path: .lighthouseci/reports
@@ -93,7 +94,7 @@ jobs:
       contents: read
     steps:
       - name: Check out complete history
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -104,4 +105,4 @@ jobs:
 
       - name: Review dependency changes
         if: github.event_name == 'pull_request'
-        uses: actions/dependency-review-action@v4
+        uses: actions/dependency-review-action@v5
