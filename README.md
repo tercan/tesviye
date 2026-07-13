@@ -7,7 +7,7 @@ useful presets, format conversion, quality control, safe output naming, and a Fi
 workflow.
 
 [Website](https://tercan.github.io/tesviye/) · [Türkçe tanıtım](https://tercan.github.io/tesviye/tr/) ·
-[Version 1.0.0](https://github.com/tercan/tesviye/releases/tag/v1.0.0)
+[Version 1.0.0](https://github.com/tercan/tesviye/tree/v1.0.0)
 
 ## Features
 

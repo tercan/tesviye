@@ -32,4 +32,4 @@ All notable changes to this project are documented in this file. The format is b
 - Custom output folder access is persisted with security-scoped bookmarks, and file replacement requires explicit
   user intent.
 
-[1.0.0]: https://github.com/tercan/tesviye/releases/tag/v1.0.0
+[1.0.0]: https://github.com/tercan/tesviye/tree/v1.0.0
