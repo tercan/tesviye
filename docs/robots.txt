@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://tercan.github.io/tesviye/sitemap.xml

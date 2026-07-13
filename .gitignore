@@ -3,5 +3,10 @@ DerivedData/
 *.xcuserstate
 xcuserdata/
 
+# Local quality tools
+.lighthouseci/
+node_modules/
+.DS_Store
+
 # Internal project documentation
 documents/

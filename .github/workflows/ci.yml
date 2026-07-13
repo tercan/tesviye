@@ -1,0 +1,107 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  swift-quality:
+    name: Swift quality, tests, and build
+    runs-on: macos-15
+    timeout-minutes: 30
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Resolve Swift packages
+        run: xcodebuild -resolvePackageDependencies -project tesviye.xcodeproj -scheme tesviye
+
+      - name: Check Swift formatting
+        run: xcrun swift-format lint --strict --recursive .
+
+      - name: Validate property lists
+        run: find . -name '*.plist' -print0 | xargs -0 -n1 plutil -lint
+
+      - name: Run tests
+        run: >-
+          xcodebuild
+          -project tesviye.xcodeproj
+          -scheme tesviye
+          -destination 'platform=macOS'
+          -derivedDataPath "$RUNNER_TEMP/TesviyeDerivedData"
+          CODE_SIGNING_ALLOWED=NO
+          test
+
+      - name: Build Release configuration
+        run: >-
+          xcodebuild
+          -project tesviye.xcodeproj
+          -scheme tesviye
+          -configuration Release
+          -destination 'platform=macOS'
+          -derivedDataPath "$RUNNER_TEMP/TesviyeDerivedData-Release"
+          CODE_SIGNING_ALLOWED=NO
+          build
+
+  website-quality:
+    name: Website quality and performance
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Validate local references and budgets
+        run: node scripts/validate-site.mjs
+
+      - name: Validate HTML
+        run: npx --yes html-validate@11.5.5 docs/index.html docs/tr/index.html
+
+      - name: Validate CSS
+        run: npx --yes stylelint@17.14.0 docs/style.css --config .stylelintrc.json
+
+      - name: Check JavaScript syntax
+        run: node --check docs/script.js
+
+      - name: Run Lighthouse quality gates
+        run: npx --yes @lhci/cli@0.15.1 autorun --config=lighthouserc.json
+
+      - name: Upload Lighthouse reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-reports
+          path: .lighthouseci/reports
+          if-no-files-found: ignore
+
+  security:
+    name: Security and dependency review
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Check out complete history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Scan repository for secrets
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Review dependency changes
+        if: github.event_name == 'pull_request'
+        uses: actions/dependency-review-action@v4

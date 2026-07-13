@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+      name="description"
+      content="Tesviye is a native macOS app for resizing one or many images with presets, format conversion, quality control, and Finder Quick Actions."
+    >
+    <meta name="theme-color" content="#ffffff">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; upgrade-insecure-requests"
+    >
+    <title>Tesviye — Native Image Resizing for macOS</title>
+    <link rel="canonical" href="https://tercan.github.io/tesviye/">
+    <link rel="alternate" hreflang="en" href="https://tercan.github.io/tesviye/">
+    <link rel="alternate" hreflang="tr" href="https://tercan.github.io/tesviye/tr/">
+    <link rel="alternate" hreflang="x-default" href="https://tercan.github.io/tesviye/">
+    <link rel="icon" type="image/png" href="assets/tesviye-icon-256.png">
+    <link rel="apple-touch-icon" href="assets/tesviye-icon-256.png">
+    <link rel="stylesheet" href="style.css">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Tesviye">
+    <meta property="og:title" content="Tesviye — Native Image Resizing for macOS">
+    <meta
+      property="og:description"
+      content="Resize single images or entire batches with presets, format conversion, quality control, and a Finder Quick Action."
+    >
+    <meta property="og:url" content="https://tercan.github.io/tesviye/">
+    <meta property="og:image" content="https://tercan.github.io/tesviye/assets/tesviye-icon.png">
+    <meta property="og:image:alt" content="Tesviye application icon">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Tesviye — Native Image Resizing for macOS">
+    <meta
+      name="twitter:description"
+      content="A focused, private, and native macOS workflow for resizing images."
+    >
+    <meta name="twitter:image" content="https://tercan.github.io/tesviye/assets/tesviye-icon.png">
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Tesviye",
+        "description": "A native macOS application for resizing and converting one or many images.",
+        "applicationCategory": "MultimediaApplication",
+        "operatingSystem": "macOS 14 or later",
+        "softwareVersion": "1.0.0",
+        "isAccessibleForFree": true,
+        "license": "https://github.com/tercan/tesviye/blob/main/LICENSE",
+        "codeRepository": "https://github.com/tercan/tesviye",
+        "downloadUrl": "https://github.com/tercan/tesviye/releases/tag/v1.0.0",
+        "image": "https://tercan.github.io/tesviye/assets/tesviye-icon.png",
+        "author": {
+          "@type": "Person",
+          "name": "Tercan Keskin",
+          "url": "https://tercan.github.io/"
+        }
+      }
+    </script>
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <header class="site-header">
+      <div class="container header-inner" data-menu-open="false">
+        <a class="brand" href="./" aria-label="Tesviye home page">
+          <picture class="brand-picture">
+            <source
+              type="image/webp"
+              srcset="assets/tesviye-icon-36.webp 1x, assets/tesviye-icon-72.webp 2x"
+            >
+            <img
+              class="brand-icon"
+              src="assets/tesviye-icon-36.png"
+              srcset="assets/tesviye-icon-36.png 1x, assets/tesviye-icon-72.png 2x"
+              width="36"
+              height="36"
+              alt=""
+              aria-hidden="true"
+            >
+          </picture><!-- /.brand-picture -->
+          <span>Tesviye</span>
+        </a>
+
+        <nav class="site-navigation" id="primary-navigation" aria-label="Primary navigation">
+          <ul class="navigation-list">
+            <li><a class="navigation-link" href="#features">Features</a></li>
+            <li><a class="navigation-link" href="#workflow">Workflow</a></li>
+            <li><a class="navigation-link" href="#formats">Formats</a></li>
+            <li><a class="navigation-link" href="#principles">Principles</a></li>
+          </ul><!-- /.navigation-list -->
+        </nav><!-- /.site-navigation -->
+
+        <div class="header-actions">
+          <a class="language-link" href="tr/" lang="tr" hreflang="tr" aria-label="TR — Türkçe sürümü aç">TR</a>
+          <a
+            class="header-link"
+            href="https://github.com/tercan/tesviye"
+            aria-label="View Tesviye on GitHub"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                fill="currentColor"
+                d="M12 .7a11.3 11.3 0 0 0-3.6 22c.6.1.8-.2.8-.5v-2.2c-3.3.7-4-1.4-4-1.4-.5-1.4-1.3-1.7-1.3-1.7-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1.1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.6-.3-5.4-1.3-5.4-5.6 0-1.2.4-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.2 1.2a11 11 0 0 1 5.8 0c2.2-1.5 3.2-1.2 3.2-1.2.6 1.6.2 2.8.1 3.1.7.8 1.2 1.9 1.2 3.1 0 4.4-2.7 5.3-5.4 5.6.4.4.8 1.1.8 2.2v3.2c0 .3.2.6.8.5A11.3 11.3 0 0 0 12 .7Z"
+              ></path>
+            </svg>
+            <span>GitHub</span>
+          </a>
+          <button
+            class="menu-toggle"
+            type="button"
+            aria-controls="primary-navigation"
+            aria-expanded="false"
+            aria-label="Open navigation menu"
+            data-label-open="Open navigation menu"
+            data-label-close="Close navigation menu"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path fill="currentColor" d="M3 6h18v2H3V6Zm0 5h18v2H3v-2Zm0 5h18v2H3v-2Z"></path>
+            </svg>
+          </button>
+        </div><!-- /.header-actions -->
+      </div><!-- /.header-inner -->
+    </header><!-- /.site-header -->
+
+    <main id="main-content">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="container hero-grid">
+          <div class="hero-copy">
+            <p class="version-line">Version 1.0.0 · Open source</p>
+            <p class="eyebrow">Native macOS image resizing</p>
+            <h1 id="hero-title">Resize images without breaking your flow.</h1>
+            <p class="hero-lead">
+              Tesviye turns repetitive image resizing into one focused step. Work with a single image or a full
+              batch, choose the output you need, and keep everything on your Mac.
+            </p>
+            <div class="hero-actions">
+              <a class="button" href="https://github.com/tercan/tesviye/releases/tag/v1.0.0">
+                View version 1.0.0
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path fill="currentColor" d="m13 5 7 7-7 7-1.4-1.4 4.6-4.6H4v-2h12.2l-4.6-4.6L13 5Z"></path>
+                </svg>
+              </a>
+              <a class="button button--secondary" href="https://github.com/tercan/tesviye">View source</a>
+            </div><!-- /.hero-actions -->
+            <ul class="hero-facts">
+              <li class="fact-item">
+                <span class="fact-value">macOS 14+</span>
+                <span class="fact-label">Native SwiftUI app</span>
+              </li>
+              <li class="fact-item">
+                <span class="fact-value">3 formats</span>
+                <span class="fact-label">JPEG, PNG, WebP</span>
+              </li>
+              <li class="fact-item">
+                <span class="fact-value">On-device</span>
+                <span class="fact-label">No image uploads</span>
+              </li>
+            </ul><!-- /.hero-facts -->
+          </div><!-- /.hero-copy -->
+
+          <figure class="app-preview" aria-labelledby="preview-caption">
+            <div class="preview-titlebar">
+              <div class="window-controls" aria-hidden="true">
+                <span class="window-control"></span>
+                <span class="window-control"></span>
+                <span class="window-control"></span>
+              </div><!-- /.window-controls -->
+              <span class="preview-title">Tesviye</span>
+              <div class="preview-actions" aria-hidden="true">
+                <span class="preview-action"></span>
+                <span class="preview-action"></span>
+              </div><!-- /.preview-actions -->
+            </div><!-- /.preview-titlebar -->
+            <div class="preview-body">
+              <div class="preview-summary">
+                <div>
+                  <strong>5 images selected</strong><br>
+                  <span>Total 28.4 MB</span>
+                </div>
+                <span class="preview-link">View list</span>
+              </div><!-- /.preview-summary -->
+
+              <div>
+                <span class="preview-section-label">Presets</span>
+                <ul class="preset-list">
+                  <li class="preset-item preset-item--active">1920 × 1080</li>
+                  <li class="preset-item">1280 × 720</li>
+                  <li class="preset-item">1080 × 1080</li>
+                  <li class="preset-item">1200 × 630</li>
+                  <li class="preset-item">800 × 800</li>
+                </ul><!-- /.preset-list -->
+              </div>
+
+              <div class="preview-dimension-row">
+                <strong class="preview-section-label">Size</strong>
+                <span class="preview-field">
+                  <span class="preview-caption">Width</span>
+                  <span class="preview-control">1920 <span class="preview-unit">px</span></span>
+                </span>
+                <span class="preview-swap" aria-hidden="true">
+                  <svg viewBox="0 0 24 24"><path fill="currentColor" d="m7 7-4 4 4 4v-3h10V9H7V7Zm10 2h4V6l-4-4v3H7v2h10v2Zm0 8H7v-2H3v3l4 4v-3h10v-2Z"></path></svg>
+                </span>
+                <span class="preview-field">
+                  <span class="preview-caption">Height</span>
+                  <span class="preview-control">1080 <span class="preview-unit">px</span></span>
+                </span>
+                <span class="preview-lock" aria-hidden="true">
+                  <svg viewBox="0 0 24 24"><path fill="currentColor" d="M6 10V7a6 6 0 0 1 12 0v3h2v12H4V10h2Zm2 0h8V7a4 4 0 0 0-8 0v3Zm-2 2v8h12v-8H6Zm5 2h2v4h-2v-4Z"></path></svg>
+                </span>
+              </div><!-- /.preview-dimension-row -->
+
+              <div class="preview-option-row">
+                <strong class="preview-section-label">Upscale</strong>
+                <span class="preview-switch" aria-hidden="true"></span>
+                <span class="preview-caption">Smaller images stay at their original size.</span>
+              </div><!-- /.preview-option-row -->
+
+              <div class="preview-option-row">
+                <strong class="preview-section-label">Overwrite</strong>
+                <span class="preview-switch" aria-hidden="true"></span>
+                <span class="preview-caption">The original is preserved; a copy is created.</span>
+              </div><!-- /.preview-option-row -->
+
+              <div class="preview-output-row">
+                <div class="preview-format">
+                  <strong class="preview-section-label">Format</strong>
+                  <span class="format-control"><span>JPEG</span><span>PNG</span><span>WebP</span></span>
+                </div><!-- /.preview-format -->
+                <span class="preview-separator" aria-hidden="true"></span>
+                <div class="preview-quality">
+                  <strong class="preview-section-label">Quality</strong>
+                  <span class="quality-control">
+                    <span class="quality-mode" aria-hidden="true">
+                      <svg viewBox="0 0 24 24"><path fill="currentColor" d="M11 2h2v3h-2V2Zm0 17h2v3h-2v-3ZM2 11h3v2H2v-2Zm17 0h3v2h-3v-2ZM4.2 5.6l1.4-1.4 2.1 2.1-1.4 1.4-2.1-2.1Zm12.1 12.1 1.4-1.4 2.1 2.1-1.4 1.4-2.1-2.1Zm0-11.4 2.1-2.1 1.4 1.4-2.1 2.1-1.4-1.4ZM4.2 18.4l2.1-2.1 1.4 1.4-2.1 2.1-1.4-1.4ZM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10Zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z"></path></svg>
+                    </span>
+                    <span class="quality-slider" aria-hidden="true"></span>
+                    <span class="preview-value">Auto</span>
+                  </span>
+                </div><!-- /.preview-quality -->
+              </div><!-- /.preview-output-row -->
+
+              <div class="preview-disclosure">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="m9 4 8 8-8 8-1.4-1.4 6.6-6.6-6.6-6.6L9 4Z"></path></svg>
+                Advanced Settings
+              </div><!-- /.preview-disclosure -->
+              <div class="preview-footer">
+                <span class="preview-caption">5 images will be resized</span>
+                <span class="preview-primary-button">Resize Images</span>
+              </div><!-- /.preview-footer -->
+            </div><!-- /.preview-body -->
+            <figcaption class="visually-hidden" id="preview-caption">
+              A compact preview of the Tesviye image resizing interface.
+            </figcaption>
+          </figure><!-- /.app-preview -->
+        </div><!-- /.hero-grid -->
+      </section><!-- /.hero -->
+
+      <section class="section" id="features" aria-labelledby="features-title">
+        <div class="container">
+          <div class="section-heading">
+            <p class="eyebrow">Focused by design</p>
+            <h2 id="features-title">Everything you need. Nothing to manage.</h2>
+            <p class="section-description">
+              Tesviye keeps batch resizing practical without turning it into a full image editor.
+            </p>
+          </div><!-- /.section-heading -->
+
+          <div class="feature-grid">
+            <article class="feature-card">
+              <span class="feature-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path fill="currentColor" d="M3 3h8v8H3V3Zm2 2v4h4V5H5Zm8-2h8v8h-8V3Zm2 2v4h4V5h-4ZM3 13h8v8H3v-8Zm2 2v4h4v-4H5Zm8-2h8v8h-8v-8Zm2 2v4h4v-4h-4Z"></path></svg>
+              </span>
+              <h3>Batch processing</h3>
+              <p>Select multiple images, review the list once, and process the entire set in a single run.</p>
+            </article><!-- /.feature-card -->
+
+            <article class="feature-card">
+              <span class="feature-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path fill="currentColor" d="M4 3h16v18H4V3Zm2 2v14h12V5H6Zm2 2h8v2H8V7Zm0 4h8v2H8v-2Zm0 4h5v2H8v-2Z"></path></svg>
+              </span>
+              <h3>Finder Quick Action</h3>
+              <p>Start directly from selected files in Finder and receive them in one Tesviye window.</p>
+            </article><!-- /.feature-card -->
+
+            <article class="feature-card">
+              <span class="feature-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path fill="currentColor" d="M3 4h18v16H3V4Zm2 2v12h14V6H5Zm2 2h4v4H7V8Zm6 0h4v2h-4V8Zm0 4h4v2h-4v-2ZM7 14h4v2H7v-2Z"></path></svg>
+              </span>
+              <h3>Useful presets</h3>
+              <p>Choose common HD, square, and social sizes or enter precise pixel dimensions.</p>
+            </article><!-- /.feature-card -->
+
+            <article class="feature-card">
+              <span class="feature-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path fill="currentColor" d="M4 5h10v2H6v11h11v-8h2v10H4V5Zm11-2h6v6h-2V6.4l-7.3 7.3-1.4-1.4L17.6 5H15V3Z"></path></svg>
+              </span>
+              <h3>Safe output</h3>
+              <p>Keep originals, choose another folder, and avoid collisions with automatic numbered filenames.</p>
+            </article><!-- /.feature-card -->
+
+            <article class="feature-card">
+              <span class="feature-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 2 4 5v6c0 5 3.4 9.7 8 11 4.6-1.3 8-6 8-11V5l-8-3Zm0 2.1L18 6.3V11c0 3.9-2.5 7.7-6 8.9-3.5-1.2-6-5-6-8.9V6.3l6-2.2Zm-1 3.9h2v4.6l3 1.7-1 1.7-4-2.3V8Z"></path></svg>
+              </span>
+              <h3>Remembered settings</h3>
+              <p>Your last size, format, quality mode, theme, suffix, and output location return on launch.</p>
+            </article><!-- /.feature-card -->
+
+            <article class="feature-card">
+              <span class="feature-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 3a9 9 0 1 0 0 18 7 7 0 0 1 0-14V3Zm-1.8 2.3A9 9 0 0 0 12 23a11 11 0 1 1 0-22v2a9 9 0 0 0-1.8.2Z"></path></svg>
+              </span>
+              <h3>Light, dark, or system</h3>
+              <p>Use the appearance that fits your desktop. The selected mode is saved automatically.</p>
+            </article><!-- /.feature-card -->
+          </div><!-- /.feature-grid -->
+        </div><!-- /.container -->
+      </section><!-- /#features -->
+
+      <section class="section section--surface" id="workflow" aria-labelledby="workflow-title">
+        <div class="container">
+          <div class="section-heading">
+            <p class="eyebrow">Three-step workflow</p>
+            <h2 id="workflow-title">Select. Configure. Resize.</h2>
+            <p class="section-description">No projects, libraries, accounts, or upload queues between you and the output.</p>
+          </div><!-- /.section-heading -->
+          <ol class="workflow-grid">
+            <li class="workflow-step">
+              <span class="step-number">01</span>
+              <h3>Select images</h3>
+              <p>Choose files inside Tesviye or launch it from Finder with the selected images already loaded.</p>
+            </li><!-- /.workflow-step -->
+            <li class="workflow-step">
+              <span class="step-number">02</span>
+              <h3>Choose the output</h3>
+              <p>Set dimensions, aspect ratio behavior, format, quality mode, suffix, and destination.</p>
+            </li><!-- /.workflow-step -->
+            <li class="workflow-step">
+              <span class="step-number">03</span>
+              <h3>Review the result</h3>
+              <p>Track batch progress, see individual outcomes, and clear the entire selection in one action.</p>
+            </li><!-- /.workflow-step -->
+          </ol><!-- /.workflow-grid -->
+        </div><!-- /.container -->
+      </section><!-- /#workflow -->
+
+      <section class="section" id="formats" aria-labelledby="formats-title">
+        <div class="container">
+          <div class="section-heading">
+            <p class="eyebrow">Output control</p>
+            <h2 id="formats-title">The right format for the next step.</h2>
+            <p class="section-description">
+              Keep the original format or convert while resizing. Automatic quality is the default; manual control is one click away.
+            </p>
+          </div><!-- /.section-heading -->
+          <div class="format-grid">
+            <article class="format-card">
+              <span class="format-name">JPEG</span>
+              <span class="format-tag">Photos and the web</span>
+              <p>Adjustable quality with a selectable background color for transparent source images.</p>
+            </article><!-- /.format-card -->
+            <article class="format-card">
+              <span class="format-name">PNG</span>
+              <span class="format-tag">Transparency and detail</span>
+              <p>Lossless output for graphics, interface assets, and images that must retain transparency.</p>
+            </article><!-- /.format-card -->
+            <article class="format-card">
+              <span class="format-name">WebP</span>
+              <span class="format-tag">Modern delivery</span>
+              <p>Compact modern output powered by libwebp, with automatic or manual quality selection.</p>
+            </article><!-- /.format-card -->
+          </div><!-- /.format-grid -->
+        </div><!-- /.container -->
+      </section><!-- /#formats -->
+
+      <section class="section section--dark" id="principles" aria-labelledby="principles-title">
+        <div class="container principles-grid">
+          <div class="section-heading">
+            <p class="eyebrow">Native by principle</p>
+            <h2 id="principles-title">A small utility that behaves like a Mac app.</h2>
+            <p class="section-description">
+              Tesviye is built for a focused desktop task, using platform conventions and local processing.
+            </p>
+          </div><!-- /.section-heading -->
+          <ul class="principle-list">
+            <li class="principle-item">
+              <h3>Private</h3>
+              <p>Image processing happens locally. Tesviye has no account system, analytics SDK, or upload service.</p>
+            </li><!-- /.principle-item -->
+            <li class="principle-item">
+              <h3>Efficient</h3>
+              <p>The app performs work when requested, saves preferences on exit, and does not remain running in the background.</p>
+            </li><!-- /.principle-item -->
+            <li class="principle-item">
+              <h3>Open</h3>
+              <p>The source is available under GPL-2.0, with libwebp acknowledged in the repository’s third-party notices.</p>
+            </li><!-- /.principle-item -->
+          </ul><!-- /.principle-list -->
+        </div><!-- /.principles-grid -->
+      </section><!-- /#principles -->
+    </main><!-- /#main-content -->
+
+    <footer class="site-footer">
+      <div class="container footer-grid">
+        <div class="footer-brand">
+          <strong>Tesviye 1.0.0</strong>
+          <span class="footer-note">Developed by Tercan Keskin · GPL-2.0</span>
+          <span class="footer-note">© <span data-current-year>2026</span> Tercan Keskin</span>
+        </div><!-- /.footer-brand -->
+        <nav class="footer-links" aria-label="Footer navigation">
+          <a class="footer-link" href="https://github.com/tercan/tesviye">Source code</a>
+          <a class="footer-link" href="https://github.com/tercan/tesviye/blob/main/README.md">Documentation</a>
+          <a class="footer-link" href="https://github.com/tercan/tesviye/blob/main/LICENSE">License</a>
+          <a class="footer-link" href="tr/" lang="tr" hreflang="tr">Türkçe</a>
+        </nav><!-- /.footer-links -->
+      </div><!-- /.footer-grid -->
+    </footer><!-- /.site-footer -->
+  </body>
+</html>

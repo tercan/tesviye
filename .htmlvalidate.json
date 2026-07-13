@@ -1,0 +1,12 @@
+{
+  "extends": ["html-validate:recommended"],
+  "rules": {
+    "attr-quotes": ["error", { "style": "double" }],
+    "no-inline-style": "error",
+    "prefer-native-element": "error",
+    "wcag/h30": "error",
+    "wcag/h32": "error",
+    "wcag/h37": "error",
+    "wcag/h63": "error"
+  }
+}

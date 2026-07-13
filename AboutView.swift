@@ -8,7 +8,7 @@ struct AboutView: View {
   }
 
   private var version: String {
-    Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "1.0"
+    Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "1.0.0"
   }
 
   var body: some View {
