@@ -18,6 +18,7 @@ const MAX_INITIAL_GZIP_BYTES = 170 * 1024;
 const MAX_CHUNK_GZIP_BYTES = 80 * 1024;
 const REQUIRED_BREAKPOINTS = ["75rem", "62rem", "48rem", "36rem"];
 const LOCAL_REFERENCE_PATTERN = /(?:href|src)="([^"]+)"/g;
+const DEVELOPER_URL = "https://tercan.net/";
 
 const failures = [];
 
@@ -70,6 +71,7 @@ function validateHtml(htmlPath) {
   const html = readText(htmlPath);
   const relativePath = htmlPath.replace(`${ROOT_DIRECTORY}/`, "");
   const description = getMetaDescription(html);
+  const footer = html.match(/<footer\b[\s\S]*?<\/footer>/i)?.[0] ?? "";
 
   assertCondition(/^<!DOCTYPE html>/i.test(html), `${relativePath}: HTML5 doctype is missing.`);
   assertCondition(/<html\s+lang="(?:en|tr)"/i.test(html), `${relativePath}: a supported lang attribute is missing.`);
@@ -88,6 +90,35 @@ function validateHtml(htmlPath) {
   assertCondition((html.match(/property="og:/g) ?? []).length >= 7, `${relativePath}: Open Graph metadata is incomplete.`);
   assertCondition((html.match(/name="twitter:/g) ?? []).length >= 4, `${relativePath}: Twitter metadata is incomplete.`);
   assertCondition(/"@type": "SoftwareApplication"/.test(html), `${relativePath}: SoftwareApplication JSON-LD is missing.`);
+  assertCondition(/class="theme-toggle"/.test(html), `${relativePath}: theme control is missing.`);
+  assertCondition(!/class="version-line"/.test(html), `${relativePath}: removed hero version line is still present.`);
+  assertCondition(!footer.includes("GPL-2.0"), `${relativePath}: removed footer license text is still present.`);
+  assertCondition(!footer.includes("data-current-year"), `${relativePath}: removed footer copyright line is still present.`);
+  assertCondition(/class="footer-terminal-icon"/.test(footer), `${relativePath}: footer terminal icon is missing.`);
+  assertCondition(!/hreflang=/.test(footer), `${relativePath}: footer language link is still present.`);
+  assertCondition(
+    /href="https:\/\/github\.com\/tercan\/tesviye\/issues"/.test(footer),
+    `${relativePath}: footer issue link is missing.`,
+  );
+  assertCondition(
+    (footer.match(/class="footer-link"/g) ?? []).length === 3,
+    `${relativePath}: footer must contain exactly three navigation links.`,
+  );
+  assertCondition(/data-label-system=/.test(html), `${relativePath}: system theme label is missing.`);
+  assertCondition(/data-label-light=/.test(html), `${relativePath}: light theme label is missing.`);
+  assertCondition(/data-label-dark=/.test(html), `${relativePath}: dark theme label is missing.`);
+  assertCondition(
+    /<main\s+id="main-content"\s+tabindex="-1">/.test(html),
+    `${relativePath}: the skip-link target must support programmatic focus.`,
+  );
+  assertCondition(
+    (html.match(new RegExp(`href="${DEVELOPER_URL}"`, "g")) ?? []).length >= 1,
+    `${relativePath}: visible developer link is missing.`,
+  );
+  assertCondition(
+    html.includes(`"url": "${DEVELOPER_URL}"`),
+    `${relativePath}: structured developer URL is invalid.`,
+  );
 
   const images = html.match(/<img\b[^>]*>/gi) ?? [];
   images.forEach((image, index) => {
@@ -125,6 +156,12 @@ function validateCss() {
   assertCondition(!/(?<!-)border-radius:\s*(?!var\(|0(?:[;\s]))/i.test(css), "docs/style.css: non-token radius found.");
   assertCondition(/:focus-visible/.test(css), "docs/style.css: visible keyboard focus styles are missing.");
   assertCondition(/prefers-reduced-motion/.test(css), "docs/style.css: reduced-motion handling is missing.");
+  assertCondition(/scroll-behavior:\s*smooth/.test(css), "docs/style.css: smooth in-page scrolling is missing.");
+  assertCondition(/:root\[data-theme="dark"\]/.test(css), "docs/style.css: dark theme token mapping is missing.");
+  assertCondition(
+    /\.eyebrow\s*\{[\s\S]*?font-weight:\s*var\(--font-weight-medium\);[\s\S]*?letter-spacing:\s*0;[\s\S]*?\}/.test(css),
+    "docs/style.css: shared eyebrow typography is invalid.",
+  );
 
   REQUIRED_BREAKPOINTS.forEach((breakpoint) => {
     assertCondition(
@@ -138,6 +175,13 @@ function validateJavaScript() {
   const source = readText(JAVASCRIPT_FILE);
   assertCondition(!/console\.log\s*\(/.test(source), "docs/script.js: console.log is not allowed.");
   assertCondition(/"use strict";/.test(source), "docs/script.js: strict mode is missing.");
+  assertCondition(/localStorage\.getItem/.test(source), "docs/script.js: persisted theme loading is missing.");
+  assertCondition(/localStorage\.setItem/.test(source), "docs/script.js: persisted theme saving is missing.");
+  assertCondition(/prefers-color-scheme: dark/.test(source), "docs/script.js: system theme detection is missing.");
+  assertCondition(/event\.preventDefault\(\)/.test(source), "docs/script.js: hashless in-page navigation is missing.");
+  assertCondition(/scrollIntoView\(/.test(source), "docs/script.js: in-page target scrolling is missing.");
+  assertCondition(/addEventListener\("hashchange"/.test(source), "docs/script.js: direct hash cleanup is missing.");
+  assertCondition(/history\.replaceState\(/.test(source), "docs/script.js: visible hash cleanup is missing.");
   assertCondition(gzipSync(source).byteLength <= MAX_CHUNK_GZIP_BYTES, "docs/script.js: lazy chunk budget exceeded.");
 }
 
@@ -146,7 +190,12 @@ function validateJavaScript() {
  */
 
 function validateInitialPayload() {
-  const initialFiles = [CSS_FILE, JAVASCRIPT_FILE, resolve(DOCUMENTS_DIRECTORY, "assets/tesviye-icon-36.webp")];
+  const initialFiles = [
+    CSS_FILE,
+    JAVASCRIPT_FILE,
+    resolve(DOCUMENTS_DIRECTORY, "assets/tesviye-icon-36.webp"),
+    resolve(DOCUMENTS_DIRECTORY, "assets/tesviye-image-resizer-screenshoot.webp"),
+  ];
   const gzipBytes = initialFiles.reduce((total, filePath) => total + gzipSync(readFileSync(filePath)).byteLength, 0);
 
   assertCondition(gzipBytes <= MAX_INITIAL_GZIP_BYTES, `docs/: initial gzip budget exceeded; found ${gzipBytes} bytes.`);

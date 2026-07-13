@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="tr" data-theme="light" data-theme-preference="system">
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,12 +7,13 @@
       name="description"
       content="Tesviye; görselleri hazır boyutlar, format dönüşümü, kalite kontrolü ve Finder Hızlı Eylemleri ile yeniden boyutlandıran yerel macOS uygulamasıdır."
     >
-    <meta name="theme-color" content="#ffffff">
+    <meta name="theme-color" content="#ffffff" data-color-light="#ffffff" data-color-dark="#0d141d">
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <meta
       http-equiv="Content-Security-Policy"
       content="default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; upgrade-insecure-requests"
     >
+    <script src="../script.js"></script>
     <title>Tesviye — macOS için Yerel Görsel Boyutlandırma</title>
     <link rel="canonical" href="https://tercan.github.io/tesviye/tr/">
     <link rel="alternate" hreflang="en" href="https://tercan.github.io/tesviye/">
@@ -55,11 +56,10 @@
         "author": {
           "@type": "Person",
           "name": "Tercan Keskin",
-          "url": "https://tercan.github.io/"
+          "url": "https://tercan.net/"
         }
       }
     </script>
-    <script src="../script.js" defer></script>
   </head>
   <body>
     <a class="skip-link" href="#main-content">İçeriğe geç</a>
@@ -96,6 +96,21 @@
 
         <div class="header-actions">
           <a class="language-link" href="../" lang="en" hreflang="en" aria-label="EN — Open the English version">EN</a>
+          <button
+            class="theme-toggle"
+            type="button"
+            aria-label="Tema ayarı: Sistem. Açık modu etkinleştir."
+            title="Tema ayarı: Sistem. Açık modu etkinleştir."
+            data-label-system="Tema ayarı: Sistem. Açık modu etkinleştir."
+            data-label-light="Tema ayarı: Açık. Koyu modu etkinleştir."
+            data-label-dark="Tema ayarı: Koyu. Sistem moduna dön."
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path class="theme-icon theme-icon--system" fill="currentColor" d="M3 4h18v13H3V4Zm2 2v9h14V6H5Zm4 13h6v2H9v-2Z"></path>
+              <path class="theme-icon theme-icon--light" fill="currentColor" d="M11 1h2v3h-2V1Zm0 19h2v3h-2v-3ZM1 11h3v2H1v-2Zm19 0h3v2h-3v-2ZM4.2 5.6l1.4-1.4 2.1 2.1-1.4 1.4-2.1-2.1Zm12.1 12.1 1.4-1.4 2.1 2.1-1.4 1.4-2.1-2.1Zm0-11.4 2.1-2.1 1.4 1.4-2.1 2.1-1.4-1.4ZM4.2 18.4l2.1-2.1 1.4 1.4-2.1 2.1-1.4-1.4ZM12 6a6 6 0 1 1 0 12 6 6 0 0 1 0-12Zm0 2a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z"></path>
+              <path class="theme-icon theme-icon--dark" d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+          </button>
           <a
             class="header-link"
             href="https://github.com/tercan/tesviye"
@@ -126,12 +141,11 @@
       </div><!-- /.header-inner -->
     </header><!-- /.site-header -->
 
-    <main id="main-content">
+    <main id="main-content" tabindex="-1">
       <section class="hero" aria-labelledby="hero-title">
         <div class="container hero-grid">
           <div class="hero-copy">
-            <p class="version-line">Sürüm 1.0.0 · Açık kaynak</p>
-            <p class="eyebrow">Yerel macOS görsel boyutlandırma</p>
+            <p class="eyebrow">macOS görsel boyutlandırıcı</p>
             <h1 id="hero-title">Akışınızı bozmadan görselleri boyutlandırın.</h1>
             <p class="hero-lead">
               Tesviye, tekrar eden görsel boyutlandırma işini tek ve odaklı bir adıma dönüştürür. Tek bir görselle
@@ -162,110 +176,33 @@
             </ul><!-- /.hero-facts -->
           </div><!-- /.hero-copy -->
 
-          <figure class="app-preview" aria-labelledby="preview-caption">
-            <div class="preview-titlebar">
-              <div class="window-controls" aria-hidden="true">
-                <span class="window-control"></span>
-                <span class="window-control"></span>
-                <span class="window-control"></span>
-              </div><!-- /.window-controls -->
-              <span class="preview-title">Tesviye</span>
-              <div class="preview-actions" aria-hidden="true">
-                <span class="preview-action"></span>
-                <span class="preview-action"></span>
-              </div><!-- /.preview-actions -->
-            </div><!-- /.preview-titlebar -->
-            <div class="preview-body">
-              <div class="preview-summary">
-                <div>
-                  <strong>5 görsel seçildi</strong><br>
-                  <span>Toplam 28,4 MB</span>
-                </div>
-                <span class="preview-link">Listeyi Gör</span>
-              </div><!-- /.preview-summary -->
-
-              <div>
-                <span class="preview-section-label">Hazır Boyut</span>
-                <ul class="preset-list">
-                  <li class="preset-item preset-item--active">1920 × 1080</li>
-                  <li class="preset-item">1280 × 720</li>
-                  <li class="preset-item">1080 × 1080</li>
-                  <li class="preset-item">1200 × 630</li>
-                  <li class="preset-item">800 × 800</li>
-                </ul><!-- /.preset-list -->
-              </div>
-
-              <div class="preview-dimension-row">
-                <strong class="preview-section-label">Boyut</strong>
-                <span class="preview-field">
-                  <span class="preview-caption">Genişlik</span>
-                  <span class="preview-control">1920 <span class="preview-unit">px</span></span>
-                </span>
-                <span class="preview-swap" aria-hidden="true">
-                  <svg viewBox="0 0 24 24"><path fill="currentColor" d="m7 7-4 4 4 4v-3h10V9H7V7Zm10 2h4V6l-4-4v3H7v2h10v2Zm0 8H7v-2H3v3l4 4v-3h10v-2Z"></path></svg>
-                </span>
-                <span class="preview-field">
-                  <span class="preview-caption">Yükseklik</span>
-                  <span class="preview-control">1080 <span class="preview-unit">px</span></span>
-                </span>
-                <span class="preview-lock" aria-hidden="true">
-                  <svg viewBox="0 0 24 24"><path fill="currentColor" d="M6 10V7a6 6 0 0 1 12 0v3h2v12H4V10h2Zm2 0h8V7a4 4 0 0 0-8 0v3Zm-2 2v8h12v-8H6Zm5 2h2v4h-2v-4Z"></path></svg>
-                </span>
-              </div><!-- /.preview-dimension-row -->
-
-              <div class="preview-option-row">
-                <strong class="preview-section-label">Görseli büyüt</strong>
-                <span class="preview-switch" aria-hidden="true"></span>
-                <span class="preview-caption">Küçük görseller orijinal ölçüsünde kalır.</span>
-              </div><!-- /.preview-option-row -->
-
-              <div class="preview-option-row">
-                <strong class="preview-section-label">Üzerine yaz</strong>
-                <span class="preview-switch" aria-hidden="true"></span>
-                <span class="preview-caption">Orijinal korunur; bir kopya oluşturulur.</span>
-              </div><!-- /.preview-option-row -->
-
-              <div class="preview-output-row">
-                <div class="preview-format">
-                  <strong class="preview-section-label">Format</strong>
-                  <span class="format-control"><span>JPEG</span><span>PNG</span><span>WebP</span></span>
-                </div><!-- /.preview-format -->
-                <span class="preview-separator" aria-hidden="true"></span>
-                <div class="preview-quality">
-                  <strong class="preview-section-label">Kalite</strong>
-                  <span class="quality-control">
-                    <span class="quality-mode" aria-hidden="true">
-                      <svg viewBox="0 0 24 24"><path fill="currentColor" d="M11 2h2v3h-2V2Zm0 17h2v3h-2v-3ZM2 11h3v2H2v-2Zm17 0h3v2h-3v-2ZM4.2 5.6l1.4-1.4 2.1 2.1-1.4 1.4-2.1-2.1Zm12.1 12.1 1.4-1.4 2.1 2.1-1.4 1.4-2.1-2.1Zm0-11.4 2.1-2.1 1.4 1.4-2.1 2.1-1.4-1.4ZM4.2 18.4l2.1-2.1 1.4 1.4-2.1 2.1-1.4-1.4ZM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10Zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z"></path></svg>
-                    </span>
-                    <span class="quality-slider" aria-hidden="true"></span>
-                    <span class="preview-value">Otomatik</span>
-                  </span>
-                </div><!-- /.preview-quality -->
-              </div><!-- /.preview-output-row -->
-
-              <div class="preview-disclosure">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="m9 4 8 8-8 8-1.4-1.4 6.6-6.6-6.6-6.6L9 4Z"></path></svg>
-                Gelişmiş Ayarlar
-              </div><!-- /.preview-disclosure -->
-              <div class="preview-footer">
-                <span class="preview-caption">5 görsel yeniden boyutlandırılacak</span>
-                <span class="preview-primary-button">Yeniden Boyutlandır</span>
-              </div><!-- /.preview-footer -->
-            </div><!-- /.preview-body -->
-            <figcaption class="visually-hidden" id="preview-caption">
-              Tesviye görsel yeniden boyutlandırma arayüzünün kompakt önizlemesi.
+          <figure class="app-screenshot" aria-labelledby="screenshot-caption">
+            <picture class="app-screenshot-picture">
+              <source type="image/webp" srcset="../assets/tesviye-image-resizer-screenshoot.webp">
+              <img
+                class="app-screenshot-image"
+                src="../assets/tesviye-image-resizer-screenshoot.png"
+                width="740"
+                height="878"
+                alt="Tesviye uygulamasının boyut, format, kalite ve gelişmiş çıktı ayarlarını gösteren penceresi."
+                decoding="async"
+                fetchpriority="high"
+              >
+            </picture><!-- /.app-screenshot-picture -->
+            <figcaption class="visually-hidden" id="screenshot-caption">
+              Tesviye görsel yeniden boyutlandırma arayüzünün koyu mod görünümü.
             </figcaption>
-          </figure><!-- /.app-preview -->
+          </figure><!-- /.app-screenshot -->
         </div><!-- /.hero-grid -->
       </section><!-- /.hero -->
 
       <section class="section" id="features" aria-labelledby="features-title">
         <div class="container">
           <div class="section-heading">
-            <p class="eyebrow">Amaca yönelik tasarım</p>
-            <h2 id="features-title">İhtiyacınız olan her şey. Yönetmeniz gereken hiçbir şey.</h2>
+            <p class="eyebrow">Tek pencerelik iş akışı</p>
+            <h2 id="features-title">Tek bir görseli veya tüm bir grubu, tek pencereden boyutlandırın.</h2>
             <p class="section-description">
-              Tesviye, toplu boyutlandırmayı tam kapsamlı bir görsel düzenleyiciye dönüşmeden pratik tutar.
+              Boyutu, formatı, kaliteyi, kayıt konumunu ve dosya adını kapsamlı bir görsel düzenleyici açmadan belirleyin.
             </p>
           </div><!-- /.section-heading -->
 
@@ -283,7 +220,7 @@
                 <svg viewBox="0 0 24 24"><path fill="currentColor" d="M4 3h16v18H4V3Zm2 2v14h12V5H6Zm2 2h8v2H8V7Zm0 4h8v2H8v-2Zm0 4h5v2H8v-2Z"></path></svg>
               </span>
               <h3>Finder Hızlı Eylemi</h3>
-              <p>Finder'da seçili dosyalardan başlayın ve tüm görselleri tek Tesviye penceresinde hazır bulun.</p>
+              <p>Finder'da seçtiğiniz görsellerle Tesviye'yi açın; tüm dosyalar tek pencerede listeye eklensin.</p>
             </article><!-- /.feature-card -->
 
             <article class="feature-card">
@@ -325,8 +262,10 @@
         <div class="container">
           <div class="section-heading">
             <p class="eyebrow">Üç adımlı iş akışı</p>
-            <h2 id="workflow-title">Seçin. Ayarlayın. Boyutlandırın.</h2>
-            <p class="section-description">Siz ve çıktı arasında proje, arşiv, hesap veya yükleme kuyruğu yoktur.</p>
+            <h2 id="workflow-title">Seçili görselleri üç adımda kullanıma hazır çıktılara dönüştürün.</h2>
+            <p class="section-description">
+              Dosyaları seçin, çıktıyı bir kez ayarlayın ve proje oluşturmadan veya yükleme yapmadan her sonucu inceleyin.
+            </p>
           </div><!-- /.section-heading -->
           <ol class="workflow-grid">
             <li class="workflow-step">
@@ -352,25 +291,25 @@
         <div class="container">
           <div class="section-heading">
             <p class="eyebrow">Çıktı denetimi</p>
-            <h2 id="formats-title">Sonraki adım için doğru format.</h2>
+            <h2 id="formats-title">Görselleri boyutlandırırken JPEG, PNG veya WebP olarak kaydedin.</h2>
             <p class="section-description">
-              Boyutlandırırken orijinal formatı koruyun veya dönüştürün. Varsayılan otomatik kalitedir; manuel denetim tek tıklama uzağınızdadır.
+              Kaynak formatı koruyun veya boyutlandırma sırasında dönüştürün. Otomatik kalite varsayılan olarak çıktı boyutunu dengeler; manuel denetim tek tıklama uzağınızdadır.
             </p>
           </div><!-- /.section-heading -->
           <div class="format-grid">
             <article class="format-card">
               <span class="format-name">JPEG</span>
-              <span class="format-tag">Fotoğraflar ve web</span>
+              <span class="format-tag">Geniş uyumluluk ve yüksek sıkıştırma</span>
               <p>Ayarlanabilir kalite ve şeffaf kaynak görseller için seçilebilir arka plan rengi.</p>
             </article><!-- /.format-card -->
             <article class="format-card">
               <span class="format-name">PNG</span>
-              <span class="format-tag">Şeffaflık ve ayrıntı</span>
+              <span class="format-tag">Kayıpsız sıkıştırma ve şeffaf arka planlar</span>
               <p>Grafikler, arayüz varlıkları ve şeffaflığı korunması gereken görseller için kayıpsız çıktı.</p>
             </article><!-- /.format-card -->
             <article class="format-card">
               <span class="format-name">WebP</span>
-              <span class="format-tag">Modern dağıtım</span>
+              <span class="format-tag">Web için optimize edilmiş modern format</span>
               <p>libwebp destekli, otomatik veya manuel kalite seçimine sahip kompakt ve modern çıktı.</p>
             </article><!-- /.format-card -->
           </div><!-- /.format-grid -->
@@ -380,22 +319,49 @@
       <section class="section section--dark" id="principles" aria-labelledby="principles-title">
         <div class="container principles-grid">
           <div class="section-heading">
-            <p class="eyebrow">İlke olarak yerel</p>
-            <h2 id="principles-title">Bir Mac uygulaması gibi davranan küçük bir yardımcı.</h2>
+            <p class="eyebrow">macOS için geliştirildi</p>
+            <h2 id="principles-title">Görselleriniz Mac'inizden çıkmadan boyutlandırılır.</h2>
             <p class="section-description">
-              Tesviye, platform alışkanlıklarını ve yerel işlemeyi kullanan, odaklı bir masaüstü görevi için geliştirilmiştir.
+              Tesviye ayarlarınızı hatırlar, sistem kaynaklarını yalnızca işlem sırasında kullanır ve kapattığınızda tamamen sonlanır.
             </p>
           </div><!-- /.section-heading -->
           <ul class="principle-list">
             <li class="principle-item">
-              <h3>Gizli</h3>
+              <div class="principle-meta">
+                <span class="principle-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter">
+                    <path d="M12 3 5 6v5c0 4.6 2.8 8.4 7 10 4.2-1.6 7-5.4 7-10V6l-7-3Z"></path>
+                    <path d="m9 12 2 2 4-4"></path>
+                  </svg>
+                </span>
+                <span class="principle-number">01</span>
+              </div><!-- /.principle-meta -->
+              <h3>Gizlilik</h3>
               <p>Görsel işleme yerel olarak gerçekleşir. Tesviye'de hesap sistemi, analiz SDK'sı veya yükleme servisi yoktur.</p>
             </li><!-- /.principle-item -->
             <li class="principle-item">
+              <div class="principle-meta">
+                <span class="principle-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter">
+                    <path d="m13 2-9 12h7l-1 8 10-13h-7V2Z"></path>
+                  </svg>
+                </span>
+                <span class="principle-number">02</span>
+              </div><!-- /.principle-meta -->
               <h3>Verimli</h3>
               <p>Uygulama yalnızca istendiğinde işlem yapar, çıkışta tercihleri kaydeder ve arka planda çalışmayı sürdürmez.</p>
             </li><!-- /.principle-item -->
             <li class="principle-item">
+              <div class="principle-meta">
+                <span class="principle-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter">
+                    <path d="m8 8-4 4 4 4"></path>
+                    <path d="m16 8 4 4-4 4"></path>
+                    <path d="m14 4-4 16"></path>
+                  </svg>
+                </span>
+                <span class="principle-number">03</span>
+              </div><!-- /.principle-meta -->
               <h3>Açık</h3>
               <p>Kaynak kod GPL-2.0 ile sunulur; libwebp bilgileri deponun üçüncü taraf bildirimlerinde yer alır.</p>
             </li><!-- /.principle-item -->
@@ -406,16 +372,17 @@
 
     <footer class="site-footer">
       <div class="container footer-grid">
-        <div class="footer-brand">
-          <strong>Tesviye 1.0.0</strong>
-          <span class="footer-note">Geliştirici: Tercan Keskin · GPL-2.0</span>
-          <span class="footer-note">© <span data-current-year>2026</span> Tercan Keskin</span>
-        </div><!-- /.footer-brand -->
+        <a class="footer-signature" href="https://tercan.net/" target="_blank" rel="author noopener noreferrer">
+          <svg class="footer-terminal-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true">
+            <path d="m4 5 7 7-7 7"></path>
+            <path d="M13 19h7"></path>
+          </svg>
+          <span>Tercan Keskin</span>
+        </a>
         <nav class="footer-links" aria-label="Alt menü">
-          <a class="footer-link" href="https://github.com/tercan/tesviye">Kaynak kod</a>
-          <a class="footer-link" href="https://github.com/tercan/tesviye/blob/main/README.md">Belgeler</a>
-          <a class="footer-link" href="https://github.com/tercan/tesviye/blob/main/LICENSE">Lisans</a>
-          <a class="footer-link" href="../" lang="en" hreflang="en">English</a>
+          <a class="footer-link" href="https://github.com/tercan/tesviye" target="_blank" rel="noopener noreferrer">GitHub</a>
+          <a class="footer-link" href="https://github.com/tercan/tesviye/issues" target="_blank" rel="noopener noreferrer">Sorun Bildir</a>
+          <a class="footer-link" href="https://github.com/tercan/tesviye/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">Lisans</a>
         </nav><!-- /.footer-links -->
       </div><!-- /.footer-grid -->
     </footer><!-- /.site-footer -->
