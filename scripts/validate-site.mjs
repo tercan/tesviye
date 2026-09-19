@@ -133,6 +133,9 @@ function validateHtml(htmlPath) {
   });
 
   const references = [...html.matchAll(LOCAL_REFERENCE_PATTERN)].map((match) => match[1]);
+  for (const match of html.matchAll(/\bsrcset="([^"]+)"/g)) {
+    references.push(...match[1].split(",").map((candidate) => candidate.trim().split(/\s+/)[0]));
+  }
   references.forEach((reference) => {
     const resolvedReference = resolveLocalReference(htmlPath, reference);
     if (resolvedReference) {
@@ -194,7 +197,8 @@ function validateInitialPayload() {
     CSS_FILE,
     JAVASCRIPT_FILE,
     resolve(DOCUMENTS_DIRECTORY, "assets/tesviye-icon-36.webp"),
-    resolve(DOCUMENTS_DIRECTORY, "assets/tesviye-image-resizer-screenshoot.webp"),
+    resolve(DOCUMENTS_DIRECTORY, "assets/tesviye-image-resizer-screenshot-light.webp"),
+    resolve(DOCUMENTS_DIRECTORY, "assets/tesviye-image-resizer-screenshot-dark.webp"),
   ];
   const gzipBytes = initialFiles.reduce((total, filePath) => total + gzipSync(readFileSync(filePath)).byteLength, 0);
 
@@ -215,7 +219,80 @@ function validateRobotsFile() {
 }
 
 /**
- * 6. Validation entrypoint
+ * 6. Screenshot and release consistency
+ */
+
+function validateScreenshotsAndRelease() {
+  const readme = readText(resolve(ROOT_DIRECTORY, "README.md"));
+  const changelog = readText(resolve(ROOT_DIRECTORY, "CHANGELOG.md"));
+  const project = readText(
+    resolve(ROOT_DIRECTORY, "tesviye.xcodeproj/project.pbxproj"),
+  );
+  const versions = new Set(
+    [...project.matchAll(/MARKETING_VERSION = ([^;]+);/g)].map(
+      (match) => match[1],
+    ),
+  );
+  assertCondition(
+    versions.size === 1,
+    "Xcode targets must share one application version.",
+  );
+  const [version] = versions;
+  assertCondition(
+    readme.includes(`Version ${version}`),
+    "README.md: application version is not synchronized.",
+  );
+  assertCondition(
+    changelog.includes(`## [${version}] - `),
+    "CHANGELOG.md: current version entry is missing.",
+  );
+
+  for (const theme of ["light", "dark"]) {
+    const basename = `tesviye-image-resizer-screenshot-${theme}`;
+    const pngPath = resolve(DOCUMENTS_DIRECTORY, `assets/${basename}.png`);
+    const webpPath = resolve(DOCUMENTS_DIRECTORY, `assets/${basename}.webp`);
+    assertCondition(
+      existsSync(pngPath) && existsSync(webpPath),
+      `${theme}: PNG/WebP screenshot pair is missing.`,
+    );
+    if (!existsSync(pngPath)) continue;
+    const png = readFileSync(pngPath);
+    const width = png.readUInt32BE(16);
+    const height = png.readUInt32BE(20);
+    assertCondition(
+      readme.includes(`docs/assets/${basename}.png`),
+      `README.md: ${theme} screenshot is missing.`,
+    );
+
+    for (const htmlPath of HTML_FILES) {
+      const html = readText(htmlPath);
+      const image =
+        (html.match(/<img\b[^>]*>/g) ?? []).find((tag) =>
+          tag.includes(`${basename}.png`),
+        ) ?? "";
+      assertCondition(
+        image.includes(`width="${width}"`) &&
+          image.includes(`height="${height}"`),
+        `${htmlPath}: ${theme} screenshot dimensions are stale.`,
+      );
+      assertCondition(
+        html.includes(`app-screenshot-picture--${theme}`),
+        `${htmlPath}: ${theme} screenshot variant is missing.`,
+      );
+      assertCondition(
+        html.includes(`"softwareVersion": "${version}"`),
+        `${htmlPath}: softwareVersion is not synchronized.`,
+      );
+      assertCondition(
+        !html.includes("screenshoot"),
+        `${htmlPath}: obsolete screenshot reference remains.`,
+      );
+    }
+  }
+}
+
+/**
+ * 7. Validation entrypoint
  */
 
 HTML_FILES.forEach(validateHtml);
@@ -223,6 +300,7 @@ validateCss();
 validateJavaScript();
 validateInitialPayload();
 validateRobotsFile();
+validateScreenshotsAndRelease();
 
 if (failures.length > 0) {
   process.stderr.write(`${failures.join("\n")}\n`);

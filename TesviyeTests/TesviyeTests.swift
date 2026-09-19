@@ -1,6 +1,7 @@
 import AppKit
 import CoreGraphics
 import ImageIO
+import SwiftUI
 import UniformTypeIdentifiers
 import XCTest
 
@@ -8,6 +9,332 @@ import XCTest
 
 @MainActor
 final class TesviyeTests: XCTestCase {
+  func testKeepSizeConvertsEveryFormatWithoutResizing() throws {
+    let directory = FileManager.default.temporaryDirectory
+      .appendingPathComponent("TesviyeTests-\(UUID().uuidString)", isDirectory: true)
+    try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+    defer { try? FileManager.default.removeItem(at: directory) }
+    let source = directory.appendingPathComponent("original.png")
+    try createPNG(at: source, width: 83, height: 47, includesTransparency: true)
+    let originalData = try Data(contentsOf: source)
+    for format in OutputFormat.allCases {
+      var preferences = UserPreferences()
+      preferences.width = 10
+      preferences.height = 999
+      preferences.allowsUpscaling = true
+      preferences.preservesAspectRatio = false
+      preferences.selectPreset(.original)
+      preferences.outputFormat = format
+      let output = try ImageResizeService.resize(
+        sourceURL: source, configuration: ResizeConfiguration(preferences: preferences)
+      )
+      let dimensions = try imageDimensions(at: output)
+      XCTAssertEqual(dimensions.width, 83)
+      XCTAssertEqual(dimensions.height, 47)
+      XCTAssertEqual(output.pathExtension, format.fileExtension)
+      XCTAssertEqual(try Data(contentsOf: source), originalData)
+    }
+  }
+
+  func testKeepSizePreservesOrientedJPEGDimensions() throws {
+    let directory = FileManager.default.temporaryDirectory
+      .appendingPathComponent("TesviyeTests-\(UUID().uuidString)", isDirectory: true)
+    try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+    defer { try? FileManager.default.removeItem(at: directory) }
+    let source = directory.appendingPathComponent("rotated.jpeg")
+    try createPatternJPEG(at: source, width: 83, height: 47, quality: 0.8, orientation: 6)
+    var preferences = UserPreferences()
+    preferences.selectPreset(.original)
+    preferences.outputFormat = .png
+    let output = try ImageResizeService.resize(
+      sourceURL: source, configuration: ResizeConfiguration(preferences: preferences)
+    )
+    let dimensions = try imageDimensions(at: output)
+    XCTAssertEqual(dimensions.width, 47)
+    XCTAssertEqual(dimensions.height, 83)
+  }
+
+  func testKeepSizeBatchPreservesEachSourceDimensions() async throws {
+    let directory = FileManager.default.temporaryDirectory
+      .appendingPathComponent("TesviyeTests-\(UUID().uuidString)", isDirectory: true)
+    try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+    defer { try? FileManager.default.removeItem(at: directory) }
+    let first = directory.appendingPathComponent("first.png")
+    let second = directory.appendingPathComponent("second.png")
+    try createPNG(at: first, width: 80, height: 40)
+    try createPNG(at: second, width: 30, height: 70)
+    let model = MainViewModel()
+    model.addImages(from: [first, second])
+    var preferences = UserPreferences()
+    preferences.selectPreset(.original)
+    model.startProcessing(preferences: preferences)
+    for _ in 0..<200 where model.isProcessing { try await Task.sleep(for: .milliseconds(10)) }
+    XCTAssertFalse(model.isProcessing)
+    XCTAssertEqual(model.successfulResults.count, 2)
+    let firstOutput = try XCTUnwrap(model.results.first?.outputURL)
+    let secondOutput = try XCTUnwrap(model.results.last?.outputURL)
+    XCTAssertEqual(try imageDimensions(at: firstOutput).width, 80)
+    XCTAssertEqual(try imageDimensions(at: firstOutput).height, 40)
+    XCTAssertEqual(try imageDimensions(at: secondOutput).width, 30)
+    XCTAssertEqual(try imageDimensions(at: secondOutput).height, 70)
+  }
+
+  func testOriginalAndCustomSelectionsSurviveNormalizationAndReload() throws {
+    let suite = "TesviyeTests.\(UUID().uuidString)"
+    let defaults = UserDefaults(suiteName: suite)!
+    defer { defaults.removePersistentDomain(forName: suite) }
+    let store = PreferencesStore(defaults: defaults, fallbackAppearance: .light)
+    store.preferences.selectPreset(.original)
+    store.flush()
+    let original = PreferencesStore(defaults: defaults).preferences
+    XCTAssertEqual(original.selectedPreset, .original)
+    XCTAssertTrue(ResizeConfiguration(preferences: original).preservesOriginalSize)
+    XCTAssertEqual(original.filenameSuffix, "_original")
+    store.preferences.selectPreset(.custom)
+    store.preferences.updateWidth(1920)
+    store.preferences.updateHeight(1080)
+    store.flush()
+    let custom = PreferencesStore(defaults: defaults).preferences
+    XCTAssertEqual(custom.selectedPreset, .custom)
+    XCTAssertFalse(ResizeConfiguration(preferences: custom).preservesOriginalSize)
+  }
+
+  func testOutputFormatDoesNotChangeCustomDimensions() {
+    var preferences = UserPreferences()
+    preferences.selectPreset(.custom)
+    preferences.updateWidth(1234)
+    preferences.updateHeight(567)
+    for format in OutputFormat.allCases {
+      preferences.outputFormat = format
+      preferences.normalize()
+      let configuration = ResizeConfiguration(preferences: preferences)
+      XCTAssertEqual(configuration.outputFormat, format)
+      XCTAssertEqual(configuration.width, 1234)
+      XCTAssertEqual(configuration.height, 567)
+      XCTAssertEqual(preferences.selectedPreset, .custom)
+    }
+    XCTAssertEqual(ResizePreset.visiblePresets.first, .original)
+    XCTAssertEqual(ResizePreset.visiblePresets.last, .custom)
+    XCTAssertEqual(ResizePreset.visiblePresets.count, 7)
+  }
+
+  func testLegacySystemAppearanceMigratesWithoutResettingOtherPreferences() throws {
+    let suite = "TesviyeTests.\(UUID().uuidString)"
+    let defaults = UserDefaults(suiteName: suite)!
+    defer { defaults.removePersistentDomain(forName: suite) }
+    var preferences = UserPreferences()
+    preferences.updateWidth(987)
+    preferences.usesFilenameSuffix = false
+    let data = try JSONEncoder().encode(
+      StoredPreferences(schemaVersion: 6, preferences: preferences))
+    var root = try XCTUnwrap(JSONSerialization.jsonObject(with: data) as? [String: Any])
+    var stored = try XCTUnwrap(root["preferences"] as? [String: Any])
+    stored["appearanceMode"] = "system"
+    root["preferences"] = stored
+    defaults.set(
+      try JSONSerialization.data(withJSONObject: root), forKey: PreferencesStore.storageKey)
+    let migrated = PreferencesStore(defaults: defaults, fallbackAppearance: .dark)
+    XCTAssertEqual(migrated.preferences.appearanceMode, .dark)
+    XCTAssertEqual(migrated.preferences.width, 987)
+    XCTAssertFalse(migrated.preferences.usesFilenameSuffix)
+    migrated.flush()
+    XCTAssertEqual(
+      PreferencesStore(defaults: defaults, fallbackAppearance: .light).preferences.appearanceMode,
+      .dark)
+  }
+
+  func testIdleTerminationSavesPreferencesAndExitsImmediately() {
+    let suite = "TesviyeTests.\(UUID().uuidString)"
+    let defaults = UserDefaults(suiteName: suite)!
+    defer { defaults.removePersistentDomain(forName: suite) }
+    let store = PreferencesStore(defaults: defaults)
+    store.preferences.selectPreset(.original)
+    let coordinator = ApplicationTerminationCoordinator()
+    let result = coordinator.shouldTerminate(
+      viewModel: MainViewModel(), preferencesStore: store,
+      confirmCancellation: {
+        XCTFail("Idle termination must not show a confirmation")
+        return false
+      },
+      reply: { _ in XCTFail("Idle termination must be immediate") }
+    )
+    XCTAssertEqual(result, .terminateNow)
+    XCTAssertEqual(PreferencesStore(defaults: defaults).preferences.selectedPreset, .original)
+  }
+
+  func testProcessingTerminationCanBeCancelledThenFinishesSafely() async throws {
+    let directory = FileManager.default.temporaryDirectory
+      .appendingPathComponent("TesviyeTests-\(UUID().uuidString)", isDirectory: true)
+    try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+    defer { try? FileManager.default.removeItem(at: directory) }
+    let source = directory.appendingPathComponent("source.png")
+    try createPNG(at: source, width: 40, height: 20)
+    let suite = "TesviyeTests.\(UUID().uuidString)"
+    let defaults = UserDefaults(suiteName: suite)!
+    defer { defaults.removePersistentDomain(forName: suite) }
+    let store = PreferencesStore(defaults: defaults)
+    let model = MainViewModel()
+    model.addImages(from: [source])
+    model.startProcessing(preferences: store.preferences)
+    let coordinator = ApplicationTerminationCoordinator()
+    XCTAssertEqual(
+      coordinator.shouldTerminate(
+        viewModel: model, preferencesStore: store, confirmCancellation: { false },
+        reply: { _ in XCTFail("Cancelled quit must not reply") }
+      ), .terminateCancel)
+    XCTAssertTrue(model.isProcessing)
+    let completed = expectation(description: "Processing has stopped before termination")
+    XCTAssertEqual(
+      coordinator.shouldTerminate(
+        viewModel: model, preferencesStore: store, confirmCancellation: { true },
+        reply: { allowed in
+          XCTAssertTrue(allowed)
+          XCTAssertFalse(model.isProcessing)
+          XCTAssertNotNil(defaults.data(forKey: PreferencesStore.storageKey))
+          completed.fulfill()
+        }
+      ), .terminateLater)
+    await fulfillment(of: [completed], timeout: 5)
+    XCTAssertTrue(FileManager.default.fileExists(atPath: source.path))
+  }
+
+  func testCompactWindowLayoutAndResultActions() throws {
+    let suiteName = "TesviyeTests.\(UUID().uuidString)"
+    let defaults = UserDefaults(suiteName: suiteName)!
+    defer { defaults.removePersistentDomain(forName: suiteName) }
+    let store = PreferencesStore(defaults: defaults, fallbackAppearance: .light)
+    let model = MainViewModel()
+    store.preferences.selectPreset(.original)
+    let original = try renderView(
+      ContentView().environmentObject(store).environmentObject(model), name: "main-original-light"
+    )
+    XCTAssertEqual(original.width, 740, accuracy: 1)
+    XCTAssertLessThan(original.height, 720)
+
+    store.preferences.selectPreset(.custom)
+    store.preferences.updateWidth(1234)
+    store.preferences.updateHeight(567)
+    store.preferences.outputFormat = .png
+    let custom = try renderView(
+      ContentView().environmentObject(store).environmentObject(model), name: "main-custom-light"
+    )
+    XCTAssertEqual(custom.width, 740, accuracy: 1)
+    XCTAssertEqual(custom.height, original.height, accuracy: 1)
+    store.preferences.appearanceMode = .dark
+    _ = try renderView(
+      ContentView().environmentObject(store).environmentObject(model), name: "main-custom-dark",
+      colorScheme: .dark
+    )
+
+    let source = URL(fileURLWithPath: "/tmp/source.jpeg")
+    let success = ResizeResult(sourceURL: source, outputURL: source, status: .success, message: nil)
+    let resultView = ProcessingResultsView(
+      summary: BatchResultSummary(results: Array(repeating: success, count: 42), total: 42),
+      failedResults: [], onReveal: {}, onClear: {}, onDismiss: {}
+    )
+    let resultSize = try renderView(resultView, name: "results-42")
+    XCTAssertEqual(resultSize.width, 560, accuracy: 1)
+    XCTAssertLessThan(resultSize.height, original.height)
+  }
+
+  func testColorPanelDisablingDetachesActiveWellAndPreventsReopening() {
+    let well = PositionedColorWell(frame: NSRect(x: 0, y: 0, width: 30, height: 24))
+    defer { well.dismissColorPanel() }
+    well.activate(true)
+    XCTAssertTrue(well.isActive)
+    well.updateEnabledState(false)
+    XCTAssertFalse(well.isEnabled)
+    XCTAssertFalse(well.isActive)
+    XCTAssertFalse(NSColorPanel.shared.isVisible)
+    well.activate(true)
+    XCTAssertFalse(well.isActive)
+  }
+
+  func testColorPanelOutsideClickClosesPanelWithoutConsumingOtherControls() throws {
+    let window = NSWindow(
+      contentRect: NSRect(x: 0, y: 0, width: 200, height: 160),
+      styleMask: .borderless, backing: .buffered, defer: false
+    )
+    window.isReleasedWhenClosed = false
+    let well = PositionedColorWell(frame: NSRect(x: 10, y: 10, width: 30, height: 24))
+    window.contentView?.addSubview(well)
+    defer {
+      well.dismissColorPanel()
+      window.close()
+    }
+    well.activate(true)
+    let event = try makeMouseDown(window: window, point: CGPoint(x: 150, y: 100))
+    XCTAssertTrue(well.handleMouseDown(event) === event)
+    XCTAssertFalse(well.isActive)
+    XCTAssertFalse(NSColorPanel.shared.isVisible)
+  }
+
+  func testColorPanelInternalClickStaysActiveAndSwatchClickCloses() throws {
+    let window = NSWindow(
+      contentRect: NSRect(x: 0, y: 0, width: 200, height: 160),
+      styleMask: .borderless, backing: .buffered, defer: false
+    )
+    window.isReleasedWhenClosed = false
+    let well = PositionedColorWell(frame: NSRect(x: 10, y: 10, width: 30, height: 24))
+    window.contentView?.addSubview(well)
+    defer {
+      well.dismissColorPanel()
+      window.close()
+    }
+    well.activate(true)
+    let panelEvent = try makeMouseDown(window: NSColorPanel.shared, point: CGPoint(x: 20, y: 20))
+    XCTAssertTrue(well.handleMouseDown(panelEvent) === panelEvent)
+    XCTAssertTrue(well.isActive)
+    let swatchEvent = try makeMouseDown(window: window, point: CGPoint(x: 20, y: 20))
+    XCTAssertNil(well.handleMouseDown(swatchEvent))
+    XCTAssertFalse(well.isActive)
+  }
+
+  func testColorPanelClosesWhenApplicationBecomesInactive() {
+    let well = PositionedColorWell(frame: NSRect(x: 0, y: 0, width: 30, height: 24))
+    defer { well.dismissColorPanel() }
+    well.activate(true)
+    NotificationCenter.default.post(
+      name: NSApplication.didResignActiveNotification, object: NSApplication.shared
+    )
+    XCTAssertFalse(well.isActive)
+    XCTAssertFalse(NSColorPanel.shared.isVisible)
+  }
+
+  private func makeMouseDown(window: NSWindow, point: CGPoint) throws -> NSEvent {
+    try XCTUnwrap(
+      NSEvent.mouseEvent(
+        with: .leftMouseDown, location: point, modifierFlags: [], timestamp: 0,
+        windowNumber: window.windowNumber, context: nil, eventNumber: 1, clickCount: 1, pressure: 1
+      )
+    )
+  }
+
+  private func renderView<Content: View>(
+    _ content: Content, name: String, colorScheme: ColorScheme = .light
+  ) throws -> CGSize {
+    let view = NSHostingView(
+      rootView: content.background(Color(nsColor: .windowBackgroundColor))
+        .environment(\.locale, Locale(identifier: "tr"))
+        .environment(\.colorScheme, colorScheme)
+    )
+    view.appearance = NSAppearance(named: colorScheme == .dark ? .darkAqua : .aqua)
+    let size = view.fittingSize
+    view.setFrameSize(size)
+    view.layoutSubtreeIfNeeded()
+    let bitmap = try XCTUnwrap(view.bitmapImageRepForCachingDisplay(in: view.bounds))
+    view.cacheDisplay(in: view.bounds, to: bitmap)
+    let data = try XCTUnwrap(bitmap.representation(using: .png, properties: [:]))
+    let directory = URL(fileURLWithPath: "/tmp/Tesviye-1.2.0-qa", isDirectory: true)
+    try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+    try data.write(to: directory.appendingPathComponent("\(name).png"))
+    let attachment = XCTAttachment(data: data, uniformTypeIdentifier: "public.png")
+    attachment.name = name
+    attachment.lifetime = .keepAlways
+    add(attachment)
+    return size
+  }
+
   func testNativeImageOpenPanelSupportsMultipleImageSelection() {
     let panel = NativeOpenPanelFactory.makeImagePanel()
 
@@ -52,10 +379,67 @@ final class TesviyeTests: XCTestCase {
     XCTAssertEqual(window.contentView?.layer?.masksToBounds, true)
   }
 
-  func testAppearanceCycleReturnsToSystem() {
-    XCTAssertEqual(AppearanceMode.system.next, .light)
-    XCTAssertEqual(AppearanceMode.light.next, .dark)
-    XCTAssertEqual(AppearanceMode.dark.next, .system)
+  func testAppearanceChoicesExcludeSystemMode() {
+    XCTAssertEqual(AppearanceMode.allCases, [.light, .dark])
+  }
+
+  func testLastWindowClosureRequestsApplicationTermination() {
+    let delegate = ExternalImageOpenCoordinator()
+    XCTAssertTrue(delegate.applicationShouldTerminateAfterLastWindowClosed(NSApplication.shared))
+    var requested = false
+    delegate.terminationHandler = {
+      requested = true
+      return .terminateNow
+    }
+    XCTAssertEqual(delegate.applicationShouldTerminate(NSApplication.shared), .terminateNow)
+    XCTAssertTrue(requested)
+  }
+
+  func testBatchResultSummaryDistinguishesSuccessFailureAndCancellation() {
+    let source = URL(fileURLWithPath: "/tmp/source.png")
+    let success = ResizeResult(sourceURL: source, outputURL: source, status: .success, message: nil)
+    let failure = ResizeResult(
+      sourceURL: source, outputURL: nil, status: .failure, message: "Error")
+    let completed = BatchResultSummary(results: Array(repeating: success, count: 42), total: 42)
+    XCTAssertEqual(completed.status, .completed)
+    XCTAssertEqual(completed.successCount, 42)
+    XCTAssertEqual(completed.failureCount, 0)
+    XCTAssertEqual(completed.remainingCount, 0)
+    XCTAssertEqual(
+      BatchResultSummary(results: [success, failure], total: 2).status, .completedWithErrors)
+    XCTAssertEqual(BatchResultSummary(results: [failure], total: 1).status, .failed)
+    let cancelled = BatchResultSummary(results: [success], total: 3)
+    XCTAssertEqual(cancelled.status, .cancelled)
+    XCTAssertEqual(cancelled.remainingCount, 2)
+  }
+
+  func testDisabledFilenameSuffixKeepsStoredTextAndProducesNoSuffix() {
+    var preferences = UserPreferences()
+    preferences.filenameSuffix = "_custom"
+    preferences.usesFilenameSuffix = false
+    preferences.normalize()
+    XCTAssertEqual(preferences.filenameSuffix, "_custom")
+    XCTAssertEqual(ResizeConfiguration(preferences: preferences).filenameSuffix, "")
+    preferences.usesFilenameSuffix = true
+    XCTAssertEqual(ResizeConfiguration(preferences: preferences).filenameSuffix, "_custom")
+  }
+
+  func testLegacyPreferencesEnableSuffixByDefault() throws {
+    let encoded = try JSONEncoder().encode(UserPreferences())
+    var legacy = try XCTUnwrap(JSONSerialization.jsonObject(with: encoded) as? [String: Any])
+    legacy.removeValue(forKey: "usesFilenameSuffix")
+    let decoded = try JSONDecoder().decode(
+      UserPreferences.self, from: JSONSerialization.data(withJSONObject: legacy)
+    )
+    XCTAssertTrue(decoded.usesFilenameSuffix)
+    XCTAssertEqual(decoded.effectiveFilenameSuffix, "_1920x1080")
+  }
+
+  func testVersionFiveCustomSuffixIsPreservedDuringMigration() {
+    var preferences = UserPreferences()
+    preferences.filenameSuffix = "-resized"
+    preferences.migrateFilenameSuffixIfNeeded(from: 5)
+    XCTAssertEqual(preferences.filenameSuffix, "-resized")
   }
 
   func testColorPanelPositionsBesideColorWellWhenSpaceIsAvailable() {
@@ -147,9 +531,82 @@ final class TesviyeTests: XCTestCase {
 
     XCTAssertEqual(
       attributes["NSExtensionServiceFinderPreviewIconName"] as? String,
-      "ResizeActionIconTemplate"
+      "FinderResizeIconTemplate"
     )
     XCTAssertNotNil(extensionBundle.url(forResource: "Assets", withExtension: "car"))
+    let icon = try XCTUnwrap(extensionBundle.image(forResource: "FinderResizeIconTemplate"))
+    XCTAssertTrue(icon.isTemplate)
+  }
+
+  func testFinderActionUsesTitleCaseTurkishMenuLabels() throws {
+    let resources = try XCTUnwrap(Bundle.main.builtInPlugInsURL)
+      .appendingPathComponent("TesviyeFinderAction.appex/Contents/Resources")
+    let turkish = try XCTUnwrap(Bundle(url: resources.appendingPathComponent("tr.lproj")))
+    let english = try XCTUnwrap(Bundle(url: resources.appendingPathComponent("en.lproj")))
+    for key in ["CFBundleDisplayName", "NSExtensionServiceFinderPreviewLabel"] {
+      XCTAssertEqual(
+        turkish.localizedString(forKey: key, value: nil, table: "InfoPlist"),
+        "Görselleri Yeniden Boyutlandır"
+      )
+      XCTAssertEqual(
+        english.localizedString(forKey: key, value: nil, table: "InfoPlist"), "Resize Images"
+      )
+    }
+  }
+
+  func testFinderIconRemainsVisibleWhenHostDrawsOriginalPixels() throws {
+    let plugInsURL = try XCTUnwrap(Bundle.main.builtInPlugInsURL)
+    let bundle = try XCTUnwrap(
+      Bundle(url: plugInsURL.appendingPathComponent("TesviyeFinderAction.appex"))
+    )
+    let image = try XCTUnwrap(bundle.image(forResource: "FinderResizeIconTemplate"))
+    XCTAssertTrue(image.isTemplate)
+    let light = try renderFinderIcon(image, appearance: .aqua)
+    let dark = try renderFinderIcon(image, appearance: .darkAqua)
+    var lightBrightness: CGFloat = 0
+    var darkBrightness: CGFloat = 0
+    var coveredPixels = 0
+    for y in 0..<48 {
+      for x in 0..<48 {
+        let lightColor = try XCTUnwrap(light.colorAt(x: x, y: y)?.usingColorSpace(.sRGB))
+        let darkColor = try XCTUnwrap(dark.colorAt(x: x, y: y)?.usingColorSpace(.sRGB))
+        XCTAssertEqual(lightColor.alphaComponent, darkColor.alphaComponent, accuracy: 0.02)
+        if lightColor.alphaComponent > 0.5 {
+          lightBrightness += lightColor.redComponent
+          darkBrightness += darkColor.redComponent
+          coveredPixels += 1
+        }
+      }
+    }
+    XCTAssertGreaterThan(coveredPixels, 100)
+    XCTAssertLessThan(lightBrightness / CGFloat(coveredPixels), 0.1)
+    XCTAssertGreaterThan(darkBrightness / CGFloat(coveredPixels), 0.9)
+  }
+
+  private func renderFinderIcon(
+    _ image: NSImage, appearance: NSAppearance.Name
+  ) throws -> NSBitmapImageRep {
+    let bitmap = try XCTUnwrap(
+      NSBitmapImageRep(
+        bitmapDataPlanes: nil, pixelsWide: 48, pixelsHigh: 48, bitsPerSample: 8, samplesPerPixel: 4,
+        hasAlpha: true, isPlanar: false, colorSpaceName: .deviceRGB, bytesPerRow: 0, bitsPerPixel: 0
+      )
+    )
+    let rawImage = try XCTUnwrap(image.copy() as? NSImage)
+    // Finder hosts may rasterize an extension icon before applying template tinting.
+    rawImage.isTemplate = false
+    NSGraphicsContext.saveGraphicsState()
+    defer { NSGraphicsContext.restoreGraphicsState() }
+    NSGraphicsContext.current = NSGraphicsContext(bitmapImageRep: bitmap)
+    try XCTUnwrap(NSAppearance(named: appearance)).performAsCurrentDrawingAppearance {
+      rawImage.draw(in: NSRect(x: 0, y: 0, width: 48, height: 48))
+    }
+    let output = URL(fileURLWithPath: "/tmp/Tesviye-1.1.2-qa", isDirectory: true)
+    try FileManager.default.createDirectory(at: output, withIntermediateDirectories: true)
+    let name = appearance == .darkAqua ? "finder-dark.png" : "finder-light.png"
+    try XCTUnwrap(bitmap.representation(using: .png, properties: [:]))
+      .write(to: output.appendingPathComponent(name))
+    return bitmap
   }
 
   func testFinderImportPayloadRejectsUnrelatedURLs() {
@@ -189,7 +646,7 @@ final class TesviyeTests: XCTestCase {
   func testDefaultPreferencesUseSafeValues() {
     let preferences = UserPreferences()
 
-    XCTAssertEqual(preferences.appearanceMode, .system)
+    XCTAssertEqual(preferences.appearanceMode, .light)
     XCTAssertEqual(preferences.selectedPreset, .fullHD)
     XCTAssertEqual(preferences.width, 1920)
     XCTAssertEqual(preferences.height, 1080)
@@ -280,6 +737,7 @@ final class TesviyeTests: XCTestCase {
     store.preferences.outputFormat = .png
     store.preferences.qualityMode = .manual
     store.preferences.filenameSuffix = "_social"
+    store.preferences.usesFilenameSuffix = false
     store.preferences.outputDirectory = OutputDirectoryPreference(
       path: "/tmp/tesviye-persisted-output"
     )
@@ -293,6 +751,7 @@ final class TesviyeTests: XCTestCase {
     XCTAssertEqual(reloadedStore.preferences.outputFormat, .png)
     XCTAssertEqual(reloadedStore.preferences.qualityMode, .manual)
     XCTAssertEqual(reloadedStore.preferences.filenameSuffix, "_social")
+    XCTAssertFalse(reloadedStore.preferences.usesFilenameSuffix)
     XCTAssertEqual(
       reloadedStore.preferences.outputDirectory?.path,
       "/tmp/tesviye-persisted-output"
@@ -343,7 +802,7 @@ final class TesviyeTests: XCTestCase {
     defer { defaults.removePersistentDomain(forName: suiteName) }
     defaults.set(Data([0x00, 0x01, 0x02]), forKey: PreferencesStore.storageKey)
 
-    let store = PreferencesStore(defaults: defaults)
+    let store = PreferencesStore(defaults: defaults, fallbackAppearance: .light)
 
     XCTAssertEqual(store.preferences, UserPreferences())
   }
@@ -355,7 +814,7 @@ final class TesviyeTests: XCTestCase {
     )
     XCTAssertEqual(
       ImageResizeService.sanitizedSuffix("   "),
-      "_yeniden-boyutlandirildi"
+      ""
     )
   }
 
@@ -388,6 +847,52 @@ final class TesviyeTests: XCTestCase {
       ).lastPathComponent,
       "source_1280x720-2.png"
     )
+  }
+
+  func testJPEGToJPGWithoutSuffixPreservesSourceAndExistingOutput() throws {
+    let directory = FileManager.default.temporaryDirectory
+      .appendingPathComponent("TesviyeTests-\(UUID().uuidString)", isDirectory: true)
+    try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+    defer { try? FileManager.default.removeItem(at: directory) }
+    let sourceURL = directory.appendingPathComponent("photo.jpeg")
+    try createPatternJPEG(at: sourceURL, width: 40, height: 20, quality: 0.8)
+    let originalData = try Data(contentsOf: sourceURL)
+    var preferences = UserPreferences()
+    preferences.usesFilenameSuffix = false
+    preferences.width = 20
+    preferences.height = 10
+    let configuration = ResizeConfiguration(preferences: preferences)
+    let outputURL = try ImageResizeService.resize(
+      sourceURL: sourceURL, configuration: configuration)
+    XCTAssertEqual(outputURL.lastPathComponent, "photo.jpg")
+    let outputData = try Data(contentsOf: outputURL)
+    let duplicateURL = try ImageResizeService.resize(
+      sourceURL: sourceURL, configuration: configuration)
+    XCTAssertEqual(duplicateURL.lastPathComponent, "photo-1.jpg")
+    XCTAssertEqual(try Data(contentsOf: sourceURL), originalData)
+    XCTAssertEqual(try Data(contentsOf: outputURL), outputData)
+    XCTAssertEqual(try imageDimensions(at: outputURL).width, 20)
+  }
+
+  func testSameFormatWithoutSuffixNeverReplacesSource() throws {
+    let directory = FileManager.default.temporaryDirectory
+      .appendingPathComponent("TesviyeTests-\(UUID().uuidString)", isDirectory: true)
+    try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+    defer { try? FileManager.default.removeItem(at: directory) }
+    let sourceURL = directory.appendingPathComponent("photo.png")
+    try createPNG(at: sourceURL, width: 40, height: 20)
+    let originalData = try Data(contentsOf: sourceURL)
+    var preferences = UserPreferences()
+    preferences.usesFilenameSuffix = false
+    preferences.outputFormat = .png
+    preferences.width = 20
+    preferences.height = 10
+    let outputURL = try ImageResizeService.resize(
+      sourceURL: sourceURL, configuration: ResizeConfiguration(preferences: preferences)
+    )
+    XCTAssertEqual(outputURL.lastPathComponent, "photo-1.png")
+    XCTAssertEqual(try Data(contentsOf: sourceURL), originalData)
+    XCTAssertEqual(try imageDimensions(at: outputURL).width, 20)
   }
 
   func testFormatConversionCollisionStartsAtOne() throws {
@@ -729,7 +1234,8 @@ final class TesviyeTests: XCTestCase {
     at url: URL,
     width: Int,
     height: Int,
-    quality: Double
+    quality: Double,
+    orientation: Int = 1
   ) throws {
     let colorSpace = CGColorSpace(name: CGColorSpace.sRGB)!
     let context = CGContext(
@@ -769,7 +1275,11 @@ final class TesviyeTests: XCTestCase {
       XCTFail("JPEG destination could not be created")
       return
     }
-    let properties = [kCGImageDestinationLossyCompressionQuality: quality] as CFDictionary
+    let properties =
+      [
+        kCGImageDestinationLossyCompressionQuality: quality,
+        kCGImagePropertyOrientation: orientation,
+      ] as CFDictionary
     CGImageDestinationAddImage(destination, image, properties)
     XCTAssertTrue(CGImageDestinationFinalize(destination))
   }

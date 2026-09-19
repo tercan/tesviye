@@ -4,6 +4,68 @@ All notable changes to this project are documented in this file. The format is b
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project follows
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.1] - 2026-09-20 00:16
+
+### Changed
+
+- Replaced separate light and dark controls with a single icon that toggles between the two appearances, with localized action labels.
+- Refreshed the English and Turkish presentation pages and README with light/dark screenshots and descriptions of the current conversion workflow.
+- Updated screenshot references and asset budgets to validate both appearances and remove obsolete image paths.
+
+## [1.2.0] - 2026-09-19 23:49
+
+### Added
+
+- Keep Size mode converts image formats while preserving each source image’s oriented pixel dimensions.
+- Explicit Custom Size selection enables shared width and height inputs independently of JPEG, PNG, or WebP output.
+
+### Changed
+
+- Simplified size choices to a text-only strip with Keep Size first and Custom Size last.
+- Made filename, output location, metadata, and JPEG background options always visible, with the last three controls sharing one row.
+- Replaced system/light/dark cycling with separate light and dark controls; existing system preferences migrate once to the current appearance.
+- Closing the app now terminates it completely, with safe batch cancellation and preference saving. Removed the persistent menu bar mode.
+
+### Fixed
+
+- Preserved explicit Keep Size and Custom Size selections when normalizing and reloading preferences.
+
+## [1.1.2] - 2026-09-19 23:26
+
+### Fixed
+
+- Capitalized the Turkish Finder Quick Action label as “Görselleri Yeniden Boyutlandır”.
+- Added light and dark Finder icon renditions while retaining template rendering, with a new asset identifier to avoid the older icon cache.
+
+## [1.1.1] - 2026-09-19 19:25
+
+### Changed
+
+- Shortened the completion heading and grouped the content-sized Finder and Clear List buttons in one consistent action row.
+- Sized the window to its content to remove unused space below collapsed and expanded Advanced Settings.
+
+### Fixed
+
+- Disabled the JPEG background color well for PNG and WebP output while retaining the saved color.
+- Dismissed the color panel on outside clicks, application deactivation, and control removal without blocking other controls.
+
+## [1.1.0] - 2026-09-19 18:26
+
+### Added
+
+- Optional filename suffix with a persistent checkbox; disabling it preserves the basename while retaining safe collision numbering.
+
+### Changed
+
+- Redesigned the completion dialog with a clear result count, a prominent Show Images in Finder action, and separate failure and interrupted-batch details.
+- Updated English and Turkish completion messages and suffix controls.
+
+### Fixed
+
+- Restored closing the borderless application window from its custom title bar.
+- Enabled native window dragging from the title and the unused area of the custom title bar.
+- Preserved existing custom suffix preferences when migrating to the new settings schema.
+
 ## [1.0.0] - 2026-07-13 08:50
 
 ### Added

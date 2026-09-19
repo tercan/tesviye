@@ -1,4 +1,5 @@
 import AppKit
+import Combine
 import SwiftUI
 
 @main
@@ -7,15 +8,17 @@ struct TesviyeApp: App {
   private var externalImageOpenCoordinator
   @StateObject private var preferencesStore = PreferencesStore()
   @StateObject private var mainViewModel = MainViewModel()
+  @StateObject private var terminationCoordinator = ApplicationTerminationCoordinator()
 
   var body: some Scene {
     Window("app.name", id: "main") {
-      ContentView()
+      ContentView(onQuit: requestQuit)
         .environmentObject(preferencesStore)
         .environmentObject(mainViewModel)
         .preferredColorScheme(preferredColorScheme)
         .background(RadiuslessWindowAccessor())
         .onAppear {
+          configureTermination()
           importPendingExternalImages()
         }
         .onChange(of: externalImageOpenCoordinator.pendingURLs) { _, urls in
@@ -31,7 +34,6 @@ struct TesviyeApp: App {
           importPendingExternalImages()
         }
     }
-    .defaultSize(width: 740, height: 688)
     .windowResizability(.contentSize)
     .windowStyle(.hiddenTitleBar)
     .commands {
@@ -42,21 +44,10 @@ struct TesviyeApp: App {
         .keyboardShortcut("q")
       }
     }
-
-    MenuBarExtra("app.name", systemImage: "photo.badge.arrow.down") {
-      MenuBarContent(
-        preferencesStore: preferencesStore,
-        mainViewModel: mainViewModel,
-        onQuit: requestQuit
-      )
-    }
-    .menuBarExtraStyle(.menu)
   }
 
   private var preferredColorScheme: ColorScheme? {
     switch preferencesStore.preferences.appearanceMode {
-    case .system:
-      return nil
     case .light:
       return .light
     case .dark:
@@ -72,30 +63,53 @@ struct TesviyeApp: App {
     mainViewModel.addImagesFromExternalOpen(urls)
   }
 
-  @MainActor
   private func requestQuit() {
-    if mainViewModel.isProcessing {
-      let alert = NSAlert()
-      alert.alertStyle = .warning
-      alert.messageText = String(localized: "quit.processing.title")
-      alert.informativeText = String(localized: "quit.processing.message")
-      alert.addButton(withTitle: String(localized: "quit.processing.confirm"))
-      alert.addButton(withTitle: String(localized: "action.cancel"))
-
-      guard alert.runModal() == .alertFirstButtonReturn else {
-        return
-      }
-
-      Task {
-        await mainViewModel.cancelProcessingAndWait()
-        preferencesStore.flush()
-        NSApplication.shared.terminate(nil)
-      }
-      return
-    }
-
-    preferencesStore.flush()
     NSApplication.shared.terminate(nil)
+  }
+
+  private func configureTermination() {
+    externalImageOpenCoordinator.terminationHandler = {
+      terminationCoordinator.shouldTerminate(
+        viewModel: mainViewModel,
+        preferencesStore: preferencesStore,
+        confirmCancellation: {
+          let alert = NSAlert()
+          alert.alertStyle = .warning
+          alert.messageText = String(localized: "quit.processing.title")
+          alert.informativeText = String(localized: "quit.processing.message")
+          alert.addButton(withTitle: String(localized: "quit.processing.confirm"))
+          alert.addButton(withTitle: String(localized: "action.cancel"))
+          return alert.runModal() == .alertFirstButtonReturn
+        },
+        reply: { NSApplication.shared.reply(toApplicationShouldTerminate: $0) }
+      )
+    }
+  }
+}
+
+@MainActor
+final class ApplicationTerminationCoordinator: ObservableObject {
+  private var isWaitingForProcessing = false
+
+  func shouldTerminate(
+    viewModel: MainViewModel,
+    preferencesStore: PreferencesStore,
+    confirmCancellation: () -> Bool,
+    reply: @escaping (Bool) -> Void
+  ) -> NSApplication.TerminateReply {
+    guard !isWaitingForProcessing else { return .terminateLater }
+    guard viewModel.isProcessing else {
+      preferencesStore.flush()
+      return .terminateNow
+    }
+    guard confirmCancellation() else { return .terminateCancel }
+    isWaitingForProcessing = true
+    Task {
+      await viewModel.cancelProcessingAndWait()
+      preferencesStore.flush()
+      reply(true)
+    }
+    return .terminateLater
   }
 }
 
@@ -123,6 +137,24 @@ struct RadiuslessWindowConfiguration {
   }
 }
 
+struct WindowDragArea: NSViewRepresentable {
+  func makeNSView(context: Context) -> WindowDragView {
+    WindowDragView()
+  }
+
+  func updateNSView(_ nsView: WindowDragView, context: Context) {}
+}
+
+final class WindowDragView: NSView {
+  override func acceptsFirstMouse(for event: NSEvent?) -> Bool {
+    true
+  }
+
+  override func mouseDown(with event: NSEvent) {
+    window?.performDrag(with: event)
+  }
+}
+
 private struct RadiuslessWindowAccessor: NSViewRepresentable {
   func makeNSView(context: Context) -> NSView {
     let view = NSView()
@@ -136,40 +168,5 @@ private struct RadiuslessWindowAccessor: NSViewRepresentable {
   func updateNSView(_ nsView: NSView, context: Context) {
     guard let window = nsView.window else { return }
     RadiuslessWindowConfiguration.apply(to: window)
-  }
-}
-
-private struct MenuBarContent: View {
-  @Environment(\.openWindow) private var openWindow
-  @ObservedObject var preferencesStore: PreferencesStore
-  @ObservedObject var mainViewModel: MainViewModel
-  let onQuit: @MainActor () -> Void
-
-  var body: some View {
-    Button("menu.open") {
-      openWindow(id: "main")
-      NSApplication.shared.activate(ignoringOtherApps: true)
-    }
-
-    if mainViewModel.isProcessing {
-      Divider()
-
-      Text(
-        String.localizedStringWithFormat(
-          String(localized: "processing.progress.format"),
-          mainViewModel.progress.completed,
-          mainViewModel.progress.total
-        ))
-
-      Button("processing.cancel") {
-        mainViewModel.cancelProcessing()
-      }
-    }
-
-    Divider()
-
-    Button("menu.quit") {
-      onQuit()
-    }
   }
 }

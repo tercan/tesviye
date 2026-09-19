@@ -4,11 +4,10 @@
 "action.done" = "Tamam";
 
 "toolbar.info.help" = "Uygulama bilgilerini göster";
-"window.close.help" = "Tesviye penceresini kapat";
+"window.close.help" = "Tesviye’den çık";
 "window.minimize.help" = "Tesviye penceresini küçült";
-"appearance.system.help" = "Sistem teması etkin. Açık temaya geç.";
 "appearance.light.help" = "Açık tema etkin. Koyu temaya geç.";
-"appearance.dark.help" = "Koyu tema etkin. Sistem temasına geç.";
+"appearance.dark.help" = "Koyu tema etkin. Açık temaya geç.";
 
 "selection.empty.title" = "Görsel seçilmedi";
 "selection.empty.subtitle" = "Görselleri buraya sürükleyin veya dosya seçin.";
@@ -22,10 +21,10 @@
 "selection.import.error.title" = "Görseller Eklenemedi";
 "selection.import.error" = "Seçilen dosyalara erişilemedi. Dosyaları yeniden seçmeyi deneyin.";
 
-"preset.title" = "Hazır Boyut";
-"preset.custom" = "Özel boyut";
+"preset.original" = "Boyutu Koru";
+"preset.custom" = "Özel Boyut";
 
-"dimensions.title" = "Boyut";
+"dimensions.title" = "Özel Boyut";
 "dimensions.width" = "Genişlik";
 "dimensions.height" = "Yükseklik";
 "dimensions.pixels.short" = "px";
@@ -33,6 +32,7 @@
 "dimensions.aspect.locked.help" = "En-boy oranı korunuyor. Oran kilidini aç.";
 "dimensions.aspect.unlocked.help" = "En-boy oranı serbest. Oran kilidini kapat.";
 
+"upscale.original.description" = "Her görselin orijinal boyutu korunur.";
 "upscale.title" = "Görseli büyüt";
 "upscale.off.description" = "Küçük görseller orijinal ölçüsünde kalır.";
 "upscale.on.description" = "Küçük görseller hedef ölçüye kadar büyütülür.";
@@ -49,10 +49,9 @@
 "quality.mode.automatic.help" = "Otomatik kalite etkin. Manuel ayara geç. Otomatik mod, kaynak ve hedef boyuta göre dengeli sıkıştırma seçer; aynı formatta çıktı büyürse kaliteyi kademeli olarak ayarlar.";
 "quality.mode.manual.help" = "Manuel kalite etkin. Otomatik moda geç.";
 
-"advanced.title" = "Gelişmiş Ayarlar";
-"advanced.expand.help" = "Gelişmiş ayarları göster";
-"advanced.collapse.help" = "Gelişmiş ayarları gizle";
 "advanced.suffix.title" = "Dosya adı son eki";
+"advanced.suffix.enabled.help" = "Kapalıyken dosya adına son ek eklenmez. Aynı adlı dosya varsa numara eklenir.";
+"advanced.suffix.enabled" = "Dosya adı son ekini kullan";
 "advanced.suffix.placeholder" = "_1920x1080";
 "advanced.suffix.example.format" = "Örnek: %@";
 "advanced.suffix.sampleBase" = "foto";
@@ -70,7 +69,8 @@
 "advanced.jpegBackground.white" = "Beyaz";
 "advanced.jpegBackground.help" = "JPEG çıktısındaki şeffaf alanları dolduracak rengi seçin.";
 
-"processing.start" = "Yeniden Boyutlandır";
+"processing.status.original" = "Yalnız format değiştirilecek; boyutlar korunacak";
+"processing.start" = "Dönüştür";
 "processing.cancel" = "İşlemi İptal Et";
 "processing.status.empty" = "Başlamak için görsel ekleyin";
 "processing.status.ready" = "Görseller işlenmeye hazır";
@@ -86,15 +86,19 @@
 "processing.error.generic" = "Görsel işlenirken beklenmeyen bir hata oluştu.";
 
 "results.title" = "İşlem Tamamlandı";
-"results.summary.format" = "%ld başarılı, %ld başarısız dosya.";
-"results.reveal" = "Finder’da Göster";
+"results.remaining.format" = "%ld dosya işlenmeden kaldı.";
+"results.failure.format" = "%ld dosya işlenemedi. Aşağıdaki açıklamaları kontrol ederek tekrar deneyin.";
+"results.success.format" = "%ld dosya başarıyla dönüştürüldü/yeniden boyutlandırıldı.";
+"results.cancelled.title" = "Görsel işleme durduruldu.";
+"results.failed.title" = "Görseller işlenemedi.";
+"results.partial.title" = "İşlem tamamlandı; bazı görseller işlenemedi.";
+"results.reveal" = "Görselleri Finder’da Göster";
 "results.clearList" = "Listeyi Temizle";
 "results.clearList.help" = "Seçili görselleri ve işlem sonuçlarını listeden kaldırır; oluşturulan dosyaları silmez.";
 
-"menu.open" = "Tesviye’yi Aç";
 "menu.quit" = "Tesviye’den Çık";
 "quit.processing.title" = "İşlem devam ediyor";
-"quit.processing.message" = "Çıkarsanız devam eden işlem iptal edilecek ve tamamlanmamış geçici dosyalar temizlenecek.";
+"quit.processing.message" = "Devam eden dosya güvenle tamamlandıktan sonra işlem durdurulur ve uygulama kapanır. Devam etmek istiyor musunuz?";
 "quit.processing.confirm" = "İşlemi İptal Et ve Çık";
 
 "about.version.format" = "Sürüm %@";

@@ -4,11 +4,10 @@
 "action.done" = "Done";
 
 "toolbar.info.help" = "Show application information";
-"window.close.help" = "Close the Tesviye window";
+"window.close.help" = "Quit Tesviye";
 "window.minimize.help" = "Minimize the Tesviye window";
-"appearance.system.help" = "System appearance is active. Switch to light appearance.";
 "appearance.light.help" = "Light appearance is active. Switch to dark appearance.";
-"appearance.dark.help" = "Dark appearance is active. Switch to system appearance.";
+"appearance.dark.help" = "Dark appearance is active. Switch to light appearance.";
 
 "selection.empty.title" = "No images selected";
 "selection.empty.subtitle" = "Drop images here or choose files.";
@@ -22,10 +21,10 @@
 "selection.import.error.title" = "Images Could Not Be Added";
 "selection.import.error" = "The selected files could not be accessed. Try selecting the files again.";
 
-"preset.title" = "Preset Size";
-"preset.custom" = "Custom size";
+"preset.original" = "Keep Size";
+"preset.custom" = "Custom Size";
 
-"dimensions.title" = "Size";
+"dimensions.title" = "Custom Size";
 "dimensions.width" = "Width";
 "dimensions.height" = "Height";
 "dimensions.pixels.short" = "px";
@@ -33,6 +32,7 @@
 "dimensions.aspect.locked.help" = "Aspect ratio is preserved. Unlock the aspect ratio.";
 "dimensions.aspect.unlocked.help" = "Aspect ratio is free. Lock the aspect ratio.";
 
+"upscale.original.description" = "Each image keeps its original dimensions.";
 "upscale.title" = "Upscale images";
 "upscale.off.description" = "Smaller images stay at their original size.";
 "upscale.on.description" = "Smaller images are enlarged to the target size.";
@@ -49,10 +49,9 @@
 "quality.mode.automatic.help" = "Automatic quality is active. Switch to manual adjustment. Automatic mode selects balanced compression for the source and target size, then adjusts quality in steps if same-format output grows.";
 "quality.mode.manual.help" = "Manual quality is active. Switch to automatic mode.";
 
-"advanced.title" = "Advanced Settings";
-"advanced.expand.help" = "Show advanced settings";
-"advanced.collapse.help" = "Hide advanced settings";
 "advanced.suffix.title" = "Filename suffix";
+"advanced.suffix.enabled.help" = "When off, no suffix is added. A number is added if the filename already exists.";
+"advanced.suffix.enabled" = "Use filename suffix";
 "advanced.suffix.placeholder" = "_1920x1080";
 "advanced.suffix.example.format" = "Example: %@";
 "advanced.suffix.sampleBase" = "photo";
@@ -70,7 +69,8 @@
 "advanced.jpegBackground.white" = "White";
 "advanced.jpegBackground.help" = "Choose the color used to fill transparent areas in JPEG output.";
 
-"processing.start" = "Resize";
+"processing.status.original" = "Only the format will change; dimensions will be preserved";
+"processing.start" = "Convert";
 "processing.cancel" = "Cancel Processing";
 "processing.status.empty" = "Add images to get started";
 "processing.status.ready" = "Images are ready to process";
@@ -86,15 +86,19 @@
 "processing.error.generic" = "An unexpected error occurred while processing the image.";
 
 "results.title" = "Processing Complete";
-"results.summary.format" = "%ld succeeded, %ld failed.";
-"results.reveal" = "Show in Finder";
+"results.remaining.format" = "%ld files were left unprocessed.";
+"results.failure.format" = "%ld files could not be processed. Review the details below and try again.";
+"results.success.format" = "%ld files were successfully converted/resized.";
+"results.cancelled.title" = "Image processing was stopped.";
+"results.failed.title" = "The images could not be processed.";
+"results.partial.title" = "Processing finished; some images could not be processed.";
+"results.reveal" = "Show Images in Finder";
 "results.clearList" = "Clear List";
 "results.clearList.help" = "Removes selected images and processing results from the list without deleting generated files.";
 
-"menu.open" = "Open Tesviye";
 "menu.quit" = "Quit Tesviye";
 "quit.processing.title" = "Processing is in progress";
-"quit.processing.message" = "Quitting will cancel the current operation and remove unfinished temporary files.";
+"quit.processing.message" = "The current file will finish safely, then processing will stop and the app will quit. Do you want to continue?";
 "quit.processing.confirm" = "Cancel Processing and Quit";
 
 "about.version.format" = "Version %@";

@@ -110,7 +110,7 @@ enum ImageResizeService {
     let components = suffix.components(separatedBy: invalidCharacters)
     let sanitized = components.joined(separator: "-")
       .trimmingCharacters(in: .whitespacesAndNewlines)
-    return sanitized.isEmpty ? "_yeniden-boyutlandirildi" : sanitized
+    return sanitized
   }
 
   nonisolated static func uniqueOutputURL(
@@ -174,6 +174,13 @@ enum ImageResizeService {
     sourceSize: CGSize,
     configuration: ResizeConfiguration
   ) throws -> CGSize {
+    if configuration.preservesOriginalSize {
+      guard sourceSize.width.isFinite, sourceSize.height.isFinite,
+        sourceSize.width > 0, sourceSize.height > 0,
+        sourceSize.width * sourceSize.height <= CGFloat(maximumPixelCount)
+      else { throw ImageResizeError.invalidDimensions }
+      return sourceSize
+    }
     guard
       configuration.width > 0,
       configuration.height > 0,

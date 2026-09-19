@@ -7,28 +7,36 @@ useful presets, format conversion, quality control, safe output naming, and a Fi
 workflow.
 
 [Website](https://tercan.github.io/tesviye/) · [Türkçe tanıtım](https://tercan.github.io/tesviye/tr/) ·
-[Version 1.0.0](https://github.com/tercan/tesviye/tree/v1.0.0)
+[Version 1.2.1](https://github.com/tercan/tesviye/tree/main)
+
+## Screenshots
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/tesviye-image-resizer-screenshot-dark.png">
+  <source media="(prefers-color-scheme: light)" srcset="docs/assets/tesviye-image-resizer-screenshot-light.png">
+  <img src="docs/assets/tesviye-image-resizer-screenshot-light.png" width="742" height="838" alt="Tesviye image resizing and format conversion interface.">
+</picture>
 
 ## Features
 
 - Resize a single image or process multiple selected images as a batch.
-- Enter exact width and height values or choose one of five built-in presets.
+- Keep each image’s original dimensions for format-only conversion, choose one of five built-in sizes, or enable Custom Size to enter width and height.
 - Preserve the aspect ratio, swap width and height, and optionally prevent upscaling.
-- Keep the source format or convert output to JPEG, PNG, or WebP.
+- Export to JPEG, PNG, or WebP, with or without resizing.
 - Use automatic quality by default or enable manual quality control for JPEG and WebP.
 - Preserve originals, overwrite intentionally, or save copies to a custom output folder.
-- Add a dimension-based filename suffix and resolve collisions with `-1`, `-2`, and subsequent numbers.
+- Optionally add a filename suffix and resolve collisions with `-1`, `-2`, and subsequent numbers.
 - Preserve image metadata while optionally removing location metadata.
 - Choose a JPEG background color when a transparent source must be flattened.
 - Start from Finder through the **Resize Images** Quick Action.
-- Remember the most recent resize settings, output folder, suffix, and appearance mode.
-- Follow the system appearance or use a saved light or dark theme.
+- Remember the most recent size mode, output folder, suffix, and light or dark appearance.
+- Choose a saved light or dark theme with one appearance toggle.
 - Review per-file results and clear the selected image list in one action.
 
 ## Requirements
 
 - macOS 14 or later
-- Xcode 16 or later for building from source
+- Xcode with the macOS SDK; the current local validation uses Xcode 27
 - An Apple development team selected in Xcode when running a signed local build
 
 ## Build from source
@@ -46,15 +54,17 @@ workflow.
 
 Xcode resolves the pinned `libwebp-Xcode` Swift Package dependency automatically.
 
+The custom title bar supports dragging and minimizing. Closing the app exits completely; an active batch is stopped safely before termination.
+
 ## Usage
 
 1. Select one or more images with **Select Images**, drag them onto the application window, or invoke the Finder
    Quick Action.
-2. Choose a preset or enter a target width and height.
+2. Choose **Keep Size** for format-only conversion, a preset size, or **Custom Size** to enable width and height inputs.
 3. Set upscaling, overwrite behavior, output format, and quality mode.
-4. Open **Advanced Settings** when you need a custom suffix, output folder, metadata options, or JPEG background
-   color.
-5. Select **Resize Images** and review the result list when processing finishes.
+4. Adjust the always-visible filename suffix, output folder, metadata options, and JPEG background color as needed.
+5. Disable **Use filename suffix** to retain the original basename; existing filenames still receive a safe numbered suffix.
+6. Select **Convert**, review the completion summary, and use **Show Images in Finder** to reveal the generated files.
 
 By default, Tesviye keeps the original file and writes the resized copy next to it. If a file with the same name
 already exists, the application chooses the next available numbered name instead of replacing it silently.

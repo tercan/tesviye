@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Görselleri yeniden boyutlandır</string>
+	<string>Görselleri Yeniden Boyutlandır</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -39,9 +39,9 @@
 			<key>NSExtensionServiceAllowsFinderPreviewItem</key>
 			<true/>
 			<key>NSExtensionServiceFinderPreviewLabel</key>
-			<string>Görselleri yeniden boyutlandır</string>
+			<string>Görselleri Yeniden Boyutlandır</string>
 			<key>NSExtensionServiceFinderPreviewIconName</key>
-			<string>ResizeActionIconTemplate</string>
+			<string>FinderResizeIconTemplate</string>
 		</dict>
 		<key>NSExtensionPointIdentifier</key>
 		<string>com.apple.services</string>

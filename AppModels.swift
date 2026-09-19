@@ -1,31 +1,14 @@
 import Foundation
 
 enum AppearanceMode: String, Codable, CaseIterable, Sendable {
-  case system
   case light
   case dark
 
-  var next: AppearanceMode {
-    switch self {
-    case .system:
-      return .light
-    case .light:
-      return .dark
-    case .dark:
-      return .system
-    }
-  }
+  var systemImage: String { self == .light ? "sun.max" : "moon" }
+}
 
-  var systemImage: String {
-    switch self {
-    case .system:
-      return "circle.lefthalf.filled"
-    case .light:
-      return "sun.max"
-    case .dark:
-      return "moon"
-    }
-  }
+extension CodingUserInfoKey {
+  static let fallbackAppearance = CodingUserInfoKey(rawValue: "tesviye.fallbackAppearance")!
 }
 
 enum OutputFormat: String, Codable, CaseIterable, Sendable {
@@ -77,6 +60,7 @@ enum QualityMode: String, Codable, CaseIterable, Sendable {
 }
 
 enum ResizePreset: String, Codable, CaseIterable, Identifiable, Sendable {
+  case original
   case fullHD
   case hd
   case square
@@ -98,30 +82,13 @@ enum ResizePreset: String, Codable, CaseIterable, Identifiable, Sendable {
       return (1200, 630)
     case .small:
       return (800, 800)
-    case .custom:
+    case .original, .custom:
       return nil
     }
   }
 
-  var systemImage: String {
-    switch self {
-    case .fullHD:
-      return "desktopcomputer"
-    case .hd:
-      return "rectangle"
-    case .square:
-      return "square"
-    case .social:
-      return "rectangle.split.3x1"
-    case .small:
-      return "photo"
-    case .custom:
-      return "slider.horizontal.3"
-    }
-  }
-
   static var visiblePresets: [ResizePreset] {
-    [.fullHD, .hd, .square, .social, .small]
+    [.original, .fullHD, .hd, .square, .social, .small, .custom]
   }
 }
 
@@ -183,14 +150,14 @@ struct OutputDirectoryPreference: Codable, Equatable, Sendable {
 }
 
 struct UserPreferences: Codable, Equatable, Sendable {
-  static let currentSchemaVersion = 5
+  static let currentSchemaVersion = 7
 
   private static let legacyDefaultFilenameSuffixes = [
     "-yeniden-boyutlandirildi",
     "-resized",
   ]
 
-  var appearanceMode: AppearanceMode = .system
+  var appearanceMode: AppearanceMode = .light
   var selectedPreset: ResizePreset = .fullHD
   var width = 1920
   var height = 1080
@@ -201,6 +168,7 @@ struct UserPreferences: Codable, Equatable, Sendable {
   var qualityMode: QualityMode = .automatic
   var quality = 0.85
   var filenameSuffix = "_1920x1080"
+  var usesFilenameSuffix = true
   var outputDirectory: OutputDirectoryPreference?
   var preservesMetadata = true
   var removesLocationMetadata = true
@@ -218,21 +186,23 @@ struct UserPreferences: Codable, Equatable, Sendable {
     case qualityMode
     case quality
     case filenameSuffix
+    case usesFilenameSuffix
     case outputDirectory
     case preservesMetadata
     case removesLocationMetadata
     case jpegBackgroundColor
   }
 
-  init() {}
+  init(appearanceMode: AppearanceMode = .light) {
+    self.appearanceMode = appearanceMode
+  }
 
   init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
+    let storedAppearance = try container.decodeIfPresent(String.self, forKey: .appearanceMode)
     appearanceMode =
-      try container.decodeIfPresent(
-        AppearanceMode.self,
-        forKey: .appearanceMode
-      ) ?? .system
+      storedAppearance.flatMap(AppearanceMode.init(rawValue:))
+      ?? decoder.userInfo[.fallbackAppearance] as? AppearanceMode ?? .light
     selectedPreset =
       try container.decodeIfPresent(
         ResizePreset.self,
@@ -271,6 +241,8 @@ struct UserPreferences: Codable, Equatable, Sendable {
         String.self,
         forKey: .filenameSuffix
       ) ?? Self.dimensionFilenameSuffix(width: width, height: height)
+    usesFilenameSuffix =
+      try container.decodeIfPresent(Bool.self, forKey: .usesFilenameSuffix) ?? true
     outputDirectory = try container.decodeIfPresent(
       OutputDirectoryPreference.self,
       forKey: .outputDirectory
@@ -295,7 +267,8 @@ struct UserPreferences: Codable, Equatable, Sendable {
   mutating func selectPreset(_ preset: ResizePreset) {
     let updatesAutomaticSuffix = isUsingAutomaticDimensionFilenameSuffix
     guard let dimensions = preset.dimensions else {
-      selectedPreset = .custom
+      selectedPreset = preset
+      if updatesAutomaticSuffix { filenameSuffix = dimensionFilenameSuffix }
       return
     }
 
@@ -310,7 +283,7 @@ struct UserPreferences: Codable, Equatable, Sendable {
   mutating func swapDimensions() {
     let updatesAutomaticSuffix = isUsingAutomaticDimensionFilenameSuffix
     (width, height) = (height, width)
-    updatePresetSelection()
+    selectedPreset = .custom
     if updatesAutomaticSuffix {
       filenameSuffix = dimensionFilenameSuffix
     }
@@ -319,7 +292,7 @@ struct UserPreferences: Codable, Equatable, Sendable {
   mutating func updateWidth(_ value: Int) {
     let updatesAutomaticSuffix = isUsingAutomaticDimensionFilenameSuffix
     width = value
-    updatePresetSelection()
+    selectedPreset = .custom
     if updatesAutomaticSuffix {
       filenameSuffix = dimensionFilenameSuffix
     }
@@ -328,7 +301,7 @@ struct UserPreferences: Codable, Equatable, Sendable {
   mutating func updateHeight(_ value: Int) {
     let updatesAutomaticSuffix = isUsingAutomaticDimensionFilenameSuffix
     height = value
-    updatePresetSelection()
+    selectedPreset = .custom
     if updatesAutomaticSuffix {
       filenameSuffix = dimensionFilenameSuffix
     }
@@ -369,12 +342,12 @@ struct UserPreferences: Codable, Equatable, Sendable {
       }
     }
     jpegBackgroundColor.normalize()
-    updatePresetSelection()
+    if selectedPreset != .original && selectedPreset != .custom { updatePresetSelection() }
   }
 
   mutating func migrateFilenameSuffixIfNeeded(from schemaVersion: Int) {
     guard
-      schemaVersion < Self.currentSchemaVersion,
+      schemaVersion < 5,
       Self.legacyDefaultFilenameSuffixes.contains(filenameSuffix)
     else {
       return
@@ -383,7 +356,14 @@ struct UserPreferences: Codable, Equatable, Sendable {
   }
 
   var dimensionFilenameSuffix: String {
-    Self.dimensionFilenameSuffix(width: width, height: height)
+    selectedPreset == .original
+      ? "_original" : Self.dimensionFilenameSuffix(width: width, height: height)
+  }
+
+  var effectiveFilenameSuffix: String {
+    guard usesFilenameSuffix else { return "" }
+    let trimmedSuffix = filenameSuffix.trimmingCharacters(in: .whitespacesAndNewlines)
+    return trimmedSuffix.isEmpty ? dimensionFilenameSuffix : trimmedSuffix
   }
 
   private var isUsingAutomaticDimensionFilenameSuffix: Bool {
@@ -413,6 +393,7 @@ struct SelectedImage: Identifiable, Hashable, Sendable {
 }
 
 struct ResizeConfiguration: Sendable {
+  let preservesOriginalSize: Bool
   let width: Int
   let height: Int
   let preservesAspectRatio: Bool
@@ -428,6 +409,7 @@ struct ResizeConfiguration: Sendable {
   let jpegBackgroundColor: RGBColor
 
   init(preferences: UserPreferences) {
+    preservesOriginalSize = preferences.selectedPreset == .original
     width = preferences.width
     height = preferences.height
     preservesAspectRatio = preferences.preservesAspectRatio
@@ -436,8 +418,7 @@ struct ResizeConfiguration: Sendable {
     outputFormat = preferences.outputFormat
     qualityMode = preferences.qualityMode
     quality = preferences.quality
-    let trimmedSuffix = preferences.filenameSuffix.trimmingCharacters(in: .whitespacesAndNewlines)
-    filenameSuffix = trimmedSuffix.isEmpty ? preferences.dimensionFilenameSuffix : trimmedSuffix
+    filenameSuffix = preferences.effectiveFilenameSuffix
     outputDirectory = preferences.outputDirectory
     preservesMetadata = preferences.preservesMetadata
     removesLocationMetadata = preferences.removesLocationMetadata
@@ -456,6 +437,31 @@ struct ResizeResult: Identifiable, Sendable {
   let outputURL: URL?
   let status: ResizeResultStatus
   let message: String?
+}
+
+enum BatchResultStatus: Equatable {
+  case completed
+  case completedWithErrors
+  case failed
+  case cancelled
+}
+
+struct BatchResultSummary {
+  let successCount: Int
+  let failureCount: Int
+  let remainingCount: Int
+
+  init(results: [ResizeResult], total: Int) {
+    successCount = results.filter { $0.status == .success }.count
+    failureCount = results.filter { $0.status == .failure }.count
+    remainingCount = max(0, total - results.count)
+  }
+
+  var status: BatchResultStatus {
+    if remainingCount > 0 { return .cancelled }
+    if failureCount == 0 { return .completed }
+    return successCount == 0 ? .failed : .completedWithErrors
+  }
 }
 
 struct BatchProgress: Equatable, Sendable {

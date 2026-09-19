@@ -57,6 +57,10 @@ final class MainViewModel: ObservableObject {
     results.filter { $0.status == .failure }
   }
 
+  var resultSummary: BatchResultSummary {
+    BatchResultSummary(results: results, total: progress.total)
+  }
+
   func addImages(from urls: [URL]) {
     var knownURLs = Set(selectedImages.map { $0.url.standardizedFileURL })
     let newImages = urls.compactMap { url -> SelectedImage? in

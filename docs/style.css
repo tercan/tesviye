@@ -553,6 +553,15 @@ section[id] {
   display: block;
 }
 
+.app-screenshot-picture--dark,
+:root[data-theme="dark"] .app-screenshot-picture--light {
+  display: none;
+}
+
+:root[data-theme="dark"] .app-screenshot-picture--dark {
+  display: block;
+}
+
 .app-screenshot-image {
   height: auto;
 }

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta
       name="description"
-      content="Tesviye; görselleri hazır boyutlar, format dönüşümü, kalite kontrolü ve Finder Hızlı Eylemleri ile yeniden boyutlandıran yerel macOS uygulamasıdır."
+      content="Tesviye ile görsellerin boyutunu koruyarak format değiştirin veya yeniden boyutlandırın. JPEG, PNG, WebP ve Finder Hızlı Eylem desteği."
     >
     <meta name="theme-color" content="#ffffff" data-color-light="#ffffff" data-color-dark="#0d141d">
     <meta name="referrer" content="strict-origin-when-cross-origin">
@@ -14,7 +14,7 @@
       content="default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; upgrade-insecure-requests"
     >
     <script src="../script.js"></script>
-    <title>Tesviye — macOS için Yerel Görsel Boyutlandırma</title>
+    <title>Tesviye — macOS için Görsel Boyutlandırma ve Dönüştürme</title>
     <link rel="canonical" href="https://tercan.github.io/tesviye/tr/">
     <link rel="alternate" hreflang="en" href="https://tercan.github.io/tesviye/">
     <link rel="alternate" hreflang="tr" href="https://tercan.github.io/tesviye/tr/">
@@ -24,19 +24,19 @@
     <link rel="stylesheet" href="../style.css">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Tesviye">
-    <meta property="og:title" content="Tesviye — macOS için Yerel Görsel Boyutlandırma">
+    <meta property="og:title" content="Tesviye — macOS için Görsel Boyutlandırma ve Dönüştürme">
     <meta
       property="og:description"
-      content="Tek bir görseli veya toplu dosyaları hazır ayarlar, format dönüşümü, kalite kontrolü ve Finder Hızlı Eylemi ile yeniden boyutlandırın."
+      content="Görselleri yeniden boyutlandırın veya orijinal ölçülerini koruyarak dönüştürün. Finder Hızlı Eylemi ile toplu çalışın."
     >
     <meta property="og:url" content="https://tercan.github.io/tesviye/tr/">
     <meta property="og:image" content="https://tercan.github.io/tesviye/assets/tesviye-icon.png">
     <meta property="og:image:alt" content="Tesviye uygulama simgesi">
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="Tesviye — macOS için Yerel Görsel Boyutlandırma">
+    <meta name="twitter:title" content="Tesviye — macOS için Görsel Boyutlandırma ve Dönüştürme">
     <meta
       name="twitter:description"
-      content="Görselleri yeniden boyutlandırmak için odaklı, gizliliğe saygılı ve yerel bir macOS iş akışı."
+      content="Görselleri boyutlandırmak ve JPEG, PNG veya WebP biçimine dönüştürmek için yerel bir macOS iş akışı."
     >
     <meta name="twitter:image" content="https://tercan.github.io/tesviye/assets/tesviye-icon.png">
     <script type="application/ld+json">
@@ -47,11 +47,11 @@
         "description": "Bir veya birden çok görseli yeniden boyutlandıran ve dönüştüren yerel macOS uygulaması.",
         "applicationCategory": "MultimediaApplication",
         "operatingSystem": "macOS 14 veya üzeri",
-        "softwareVersion": "1.0.0",
+        "softwareVersion": "1.2.1",
         "isAccessibleForFree": true,
         "license": "https://github.com/tercan/tesviye/blob/main/LICENSE",
         "codeRepository": "https://github.com/tercan/tesviye",
-        "downloadUrl": "https://github.com/tercan/tesviye/archive/refs/tags/v1.0.0.zip",
+        "downloadUrl": "https://github.com/tercan/tesviye/archive/refs/heads/main.zip",
         "image": "https://tercan.github.io/tesviye/assets/tesviye-icon.png",
         "author": {
           "@type": "Person",
@@ -146,14 +146,14 @@
         <div class="container hero-grid">
           <div class="hero-copy">
             <p class="eyebrow">macOS görsel boyutlandırıcı</p>
-            <h1 id="hero-title">Akışınızı bozmadan görselleri boyutlandırın.</h1>
+            <h1 id="hero-title">Akışınızı bozmadan görselleri boyutlandırın ve dönüştürün.</h1>
             <p class="hero-lead">
               Tesviye, tekrar eden görsel boyutlandırma işini tek ve odaklı bir adıma dönüştürür. Tek bir görselle
               veya toplu dosyalarla çalışın, çıktıyı belirleyin ve tüm işlemi Mac'inizde tamamlayın.
             </p>
             <div class="hero-actions">
-              <a class="button" href="https://github.com/tercan/tesviye/tree/v1.0.0">
-                1.0.0 sürümünü görüntüle
+              <a class="button" href="https://github.com/tercan/tesviye/tree/main">
+                1.2.1 sürümünü görüntüle
                 <svg viewBox="0 0 24 24" aria-hidden="true">
                   <path fill="currentColor" d="m13 5 7 7-7 7-1.4-1.4 4.6-4.6H4v-2h12.2l-4.6-4.6L13 5Z"></path>
                 </svg>
@@ -177,20 +177,32 @@
           </div><!-- /.hero-copy -->
 
           <figure class="app-screenshot" aria-labelledby="screenshot-caption">
-            <picture class="app-screenshot-picture">
-              <source type="image/webp" srcset="../assets/tesviye-image-resizer-screenshoot.webp">
+            <picture class="app-screenshot-picture app-screenshot-picture--light">
+              <source type="image/webp" srcset="../assets/tesviye-image-resizer-screenshot-light.webp">
               <img
                 class="app-screenshot-image"
-                src="../assets/tesviye-image-resizer-screenshoot.png"
-                width="740"
-                height="878"
-                alt="Tesviye uygulamasının boyut, format, kalite ve gelişmiş çıktı ayarlarını gösteren penceresi."
+                src="../assets/tesviye-image-resizer-screenshot-light.png"
+                width="742"
+                height="838"
+                alt="Tesviye görsel dönüştürme ayarlarının açık tema görünümü."
+                decoding="async"
+                fetchpriority="high"
+              >
+            </picture><!-- /.app-screenshot-picture -->
+            <picture class="app-screenshot-picture app-screenshot-picture--dark">
+              <source type="image/webp" srcset="../assets/tesviye-image-resizer-screenshot-dark.webp">
+              <img
+                class="app-screenshot-image"
+                src="../assets/tesviye-image-resizer-screenshot-dark.png"
+                width="742"
+                height="838"
+                alt="Tesviye görsel dönüştürme ayarlarının koyu tema görünümü."
                 decoding="async"
                 fetchpriority="high"
               >
             </picture><!-- /.app-screenshot-picture -->
             <figcaption class="visually-hidden" id="screenshot-caption">
-              Tesviye görsel yeniden boyutlandırma arayüzünün koyu mod görünümü.
+              Tesviye arayüzü önizlemesi, sitenin tema seçimine uyum sağlar.
             </figcaption>
           </figure><!-- /.app-screenshot -->
         </div><!-- /.hero-grid -->
@@ -228,7 +240,7 @@
                 <svg viewBox="0 0 24 24"><path fill="currentColor" d="M3 4h18v16H3V4Zm2 2v12h14V6H5Zm2 2h4v4H7V8Zm6 0h4v2h-4V8Zm0 4h4v2h-4v-2ZM7 14h4v2H7v-2Z"></path></svg>
               </span>
               <h3>Kullanışlı hazır boyutlar</h3>
-              <p>Yaygın HD, kare ve sosyal medya ölçülerini seçin veya kesin piksel değerlerini girin.</p>
+              <p>Boyutu koruyun, hazır HD/kare/sosyal medya ölçülerini seçin veya Özel Boyut ile kesin değerler girin.</p>
             </article><!-- /.feature-card -->
 
             <article class="feature-card">
@@ -251,8 +263,8 @@
               <span class="feature-icon" aria-hidden="true">
                 <svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 3a9 9 0 1 0 0 18 7 7 0 0 1 0-14V3Zm-1.8 2.3A9 9 0 0 0 12 23a11 11 0 1 1 0-22v2a9 9 0 0 0-1.8.2Z"></path></svg>
               </span>
-              <h3>Açık, koyu veya sistem</h3>
-              <p>Masaüstünüze uygun görünümü kullanın. Seçilen tema modu otomatik olarak kaydedilir.</p>
+              <h3>Açık veya koyu tema</h3>
+              <p>Tek simgeyle açık ve koyu tema arasında geçin. Seçiminiz otomatik olarak kaydedilir.</p>
             </article><!-- /.feature-card -->
           </div><!-- /.feature-grid -->
         </div><!-- /.container -->
@@ -276,12 +288,12 @@
             <li class="workflow-step">
               <span class="step-number">02</span>
               <h3>Çıktıyı belirleyin</h3>
-              <p>Boyutu, en-boy oranı davranışını, formatı, kalite modunu, son eki ve hedef konumu ayarlayın.</p>
+              <p>Boyutu koruyun veya yeni ölçüler girin; ardından formatı, kaliteyi, isteğe bağlı son eki ve kayıt konumunu seçin.</p>
             </li><!-- /.workflow-step -->
             <li class="workflow-step">
               <span class="step-number">03</span>
               <h3>Sonucu inceleyin</h3>
-              <p>Toplu işlem ilerlemesini izleyin, her dosyanın sonucunu görün ve seçimi tek aksiyonla temizleyin.</p>
+              <p>İşlem özetini inceleyin, çıktıları Finder’da gösterin veya seçili görsel listesini temizleyin.</p>
             </li><!-- /.workflow-step -->
           </ol><!-- /.workflow-grid -->
         </div><!-- /.container -->
@@ -293,7 +305,7 @@
             <p class="eyebrow">Çıktı denetimi</p>
             <h2 id="formats-title">Görselleri boyutlandırırken JPEG, PNG veya WebP olarak kaydedin.</h2>
             <p class="section-description">
-              Kaynak formatı koruyun veya boyutlandırma sırasında dönüştürün. Otomatik kalite varsayılan olarak çıktı boyutunu dengeler; manuel denetim tek tıklama uzağınızdadır.
+              Boyutları değiştirmeden format dönüştürün veya iki işlemi birlikte yapın. Otomatik kalite çıktı boyutunu dengeler; manuel denetim tek tıklama uzağınızdadır.
             </p>
           </div><!-- /.section-heading -->
           <div class="format-grid">

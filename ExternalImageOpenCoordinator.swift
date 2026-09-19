@@ -5,6 +5,15 @@ import Foundation
 @MainActor
 final class ExternalImageOpenCoordinator: NSObject, NSApplicationDelegate, ObservableObject {
   @Published private(set) var pendingURLs: [URL] = []
+  var terminationHandler: (() -> NSApplication.TerminateReply)?
+
+  func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
+    terminationHandler?() ?? .terminateNow
+  }
+
+  func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
+    true
+  }
 
   func application(_ application: NSApplication, open urls: [URL]) {
     handleExternalOpen(urls)

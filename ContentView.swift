@@ -5,10 +5,14 @@ import UniformTypeIdentifiers
 struct ContentView: View {
   @EnvironmentObject private var preferencesStore: PreferencesStore
   @EnvironmentObject private var viewModel: MainViewModel
-  @State private var isAdvancedExpanded = false
-  @State private var isAdvancedContentVisible = false
   @State private var isShowingAbout = false
   @State private var isShowingOverwriteConfirmation = false
+
+  let onQuit: () -> Void
+
+  init(onQuit: @escaping () -> Void = { NSApplication.shared.terminate(nil) }) {
+    self.onQuit = onQuit
+  }
 
   var body: some View {
     ZStack {
@@ -27,13 +31,11 @@ struct ContentView: View {
           Divider()
           outputSection
           Divider()
-          advancedSection
+          advancedSettingsContent
         }
         .padding(.horizontal, 24)
         .padding(.top, 18)
         .padding(.bottom, 12)
-
-        Spacer(minLength: 0)
 
         Divider()
         actionBar
@@ -45,7 +47,8 @@ struct ContentView: View {
         appModalLayer
       }
     }
-    .frame(width: 740, height: preferredWindowHeight)
+    .frame(width: 740)
+    .fixedSize(horizontal: false, vertical: true)
     .background(Color(nsColor: .windowBackgroundColor))
     .dropDestination(for: URL.self) { urls, _ in
       viewModel.addImages(from: urls)
@@ -56,7 +59,7 @@ struct ContentView: View {
   private var windowHeader: some View {
     HStack(spacing: 8) {
       Button {
-        closeMainWindow()
+        onQuit()
       } label: {
         Image(systemName: "xmark")
           .frame(width: 26, height: 26)
@@ -77,14 +80,18 @@ struct ContentView: View {
       .help("window.minimize.help")
       .accessibilityLabel("window.minimize.help")
 
-      Text("app.name")
-        .font(.caption.weight(.semibold))
-        .foregroundStyle(.secondary)
-
-      Spacer()
+      WindowDragArea()
+        .overlay(alignment: .leading) {
+          Text("app.name")
+            .font(.caption.weight(.semibold))
+            .foregroundStyle(.secondary)
+            .allowsHitTesting(false)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
 
       Button {
-        cycleAppearance()
+        preferencesStore.preferences.appearanceMode =
+          preferencesStore.preferences.appearanceMode == .light ? .dark : .light
       } label: {
         Image(systemName: preferencesStore.preferences.appearanceMode.systemImage)
           .frame(width: 26, height: 26)
@@ -234,55 +241,44 @@ struct ContentView: View {
   }
 
   private var presetsSection: some View {
-    VStack(alignment: .leading, spacing: 10) {
-      Text("preset.title")
-        .font(.headline)
-
-      HStack(spacing: 0) {
-        ForEach(ResizePreset.visiblePresets) { preset in
-          Button {
-            selectPreset(preset)
-          } label: {
-            VStack(spacing: 6) {
-              Image(systemName: preset.systemImage)
-                .font(.system(size: 16, weight: .regular))
-              if let dimensions = preset.dimensions {
-                Text("\(dimensions.width) × \(dimensions.height)")
-                  .font(.callout)
-              }
-            }
-            .frame(maxWidth: .infinity, minHeight: 64)
+    HStack(spacing: 0) {
+      ForEach(ResizePreset.visiblePresets) { preset in
+        Button {
+          selectPreset(preset)
+        } label: {
+          Text(presetAccessibilityName(preset))
+            .font(.system(size: 12, weight: .medium))
+            .lineLimit(1)
+            .frame(maxWidth: .infinity, minHeight: 40)
             .contentShape(Rectangle())
-          }
-          .buttonStyle(
-            PresetButtonStyle(
-              isSelected: preferencesStore.preferences.selectedPreset == preset
-            )
-          )
-          .help(presetAccessibilityName(preset))
-          .accessibilityLabel(presetAccessibilityName(preset))
         }
-      }
-      .overlay {
-        Rectangle()
-          .stroke(.quaternary, lineWidth: 1)
-          .allowsHitTesting(false)
+        .buttonStyle(
+          PresetButtonStyle(isSelected: preferencesStore.preferences.selectedPreset == preset)
+        )
+        .help(presetAccessibilityName(preset))
+        .accessibilityLabel(presetAccessibilityName(preset))
+        .accessibilityAddTraits(
+          preferencesStore.preferences.selectedPreset == preset ? .isSelected : [])
       }
     }
-    .padding(.vertical, 16)
+    .overlay {
+      Rectangle().stroke(.quaternary, lineWidth: 1).allowsHitTesting(false)
+    }
+    .padding(.vertical, 14)
   }
 
   private var dimensionsSection: some View {
     HStack(alignment: .bottom, spacing: 12) {
       Text("dimensions.title")
         .font(.headline)
-        .frame(width: 120, alignment: .leading)
+        .frame(width: 190, alignment: .leading)
         .padding(.bottom, 7)
 
       dimensionField(
         title: "dimensions.width",
         value: widthBinding
       )
+      .disabled(preferencesStore.preferences.selectedPreset != .custom)
 
       Button {
         var preferences = preferencesStore.preferences
@@ -292,6 +288,7 @@ struct ContentView: View {
         Image(systemName: "arrow.left.arrow.right")
           .frame(width: 26, height: 26)
       }
+      .disabled(preferencesStore.preferences.selectedPreset != .custom)
       .help("dimensions.swap.help")
       .accessibilityLabel("dimensions.swap.help")
       .padding(.bottom, 1)
@@ -300,6 +297,7 @@ struct ContentView: View {
         title: "dimensions.height",
         value: heightBinding
       )
+      .disabled(preferencesStore.preferences.selectedPreset != .custom)
 
       Button {
         preferencesStore.preferences.preservesAspectRatio.toggle()
@@ -309,10 +307,12 @@ struct ContentView: View {
         )
         .frame(width: 26, height: 26)
       }
+      .disabled(preferencesStore.preferences.selectedPreset == .original)
       .help(aspectRatioHelpText)
       .accessibilityLabel(aspectRatioHelpText)
       .padding(.bottom, 1)
     }
+    .frame(maxWidth: .infinity, alignment: .leading)
     .padding(.vertical, 16)
   }
 
@@ -321,9 +321,12 @@ struct ContentView: View {
       settingsToggleRow(
         title: "upscale.title",
         isOn: $preferencesStore.preferences.allowsUpscaling,
-        description: preferencesStore.preferences.allowsUpscaling
-          ? "upscale.on.description"
-          : "upscale.off.description"
+        description: preferencesStore.preferences.selectedPreset == .original
+          ? "upscale.original.description"
+          : preferencesStore.preferences.allowsUpscaling
+            ? "upscale.on.description"
+            : "upscale.off.description",
+        isEnabled: preferencesStore.preferences.selectedPreset != .original
       )
 
       Divider()
@@ -402,46 +405,28 @@ struct ContentView: View {
     .padding(.vertical, 16)
   }
 
-  private var advancedSection: some View {
-    VStack(spacing: 0) {
-      Button {
-        toggleAdvancedSection()
-      } label: {
-        HStack(spacing: 10) {
-          Image(systemName: isAdvancedExpanded ? "chevron.down" : "chevron.right")
-            .font(.caption.weight(.semibold))
-            .frame(width: 12)
-          Text("advanced.title")
-            .font(.headline)
-          Spacer()
-        }
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, 12)
-        .contentShape(Rectangle())
-      }
-      .buttonStyle(.plain)
-      .help(advancedToggleHelpText)
-      .accessibilityLabel("advanced.title")
-      .accessibilityHint(advancedToggleHelpText)
-
-      if isAdvancedExpanded {
-        advancedSettingsContent
-          .opacity(isAdvancedContentVisible ? 1 : 0)
-      }
-    }
-    .padding(.vertical, 2)
-  }
-
   private var advancedSettingsContent: some View {
     VStack(spacing: 0) {
       HStack(alignment: .firstTextBaseline, spacing: 12) {
         Text("advanced.suffix.title")
+          .font(.headline)
           .frame(width: 190, alignment: .leading)
         VStack(alignment: .leading, spacing: 4) {
-          TextField(
-            "advanced.suffix.placeholder",
-            text: $preferencesStore.preferences.filenameSuffix
-          )
+          HStack(spacing: 8) {
+            Toggle(
+              "advanced.suffix.enabled", isOn: $preferencesStore.preferences.usesFilenameSuffix
+            )
+            .toggleStyle(.checkbox)
+            .labelsHidden()
+            .help("advanced.suffix.enabled.help")
+            .accessibilityLabel("advanced.suffix.enabled")
+            TextField(
+              "advanced.suffix.placeholder",
+              text: $preferencesStore.preferences.filenameSuffix
+            )
+            .disabled(!preferencesStore.preferences.usesFilenameSuffix)
+            .accessibilityLabel("advanced.suffix.title")
+          }
           Text(suffixExample)
             .font(.caption)
             .foregroundStyle(.secondary)
@@ -453,6 +438,7 @@ struct ContentView: View {
 
       HStack {
         Text("advanced.location.title")
+          .font(.headline)
           .frame(width: 190, alignment: .leading)
         if let selectedPath = selectedOutputDirectoryDisplayPath {
           Text(verbatim: selectedPath)
@@ -480,49 +466,45 @@ struct ContentView: View {
 
       Divider()
 
-      Toggle(
-        "advanced.metadata.preserve",
-        isOn: $preferencesStore.preferences.preservesMetadata
-      )
-      .frame(maxWidth: .infinity, alignment: .leading)
-      .padding(.vertical, 10)
+      HStack(spacing: 12) {
+        Toggle("advanced.metadata.preserve", isOn: $preferencesStore.preferences.preservesMetadata)
+          .toggleStyle(.checkbox)
+          .frame(maxWidth: .infinity, alignment: .leading)
 
-      Divider()
+        Divider().frame(height: 28)
 
-      Toggle(
-        "advanced.metadata.removeLocation",
-        isOn: $preferencesStore.preferences.removesLocationMetadata
-      )
-      .disabled(!preferencesStore.preferences.preservesMetadata)
-      .frame(maxWidth: .infinity, alignment: .leading)
-      .padding(.vertical, 10)
-
-      Divider()
-
-      HStack {
-        Text("advanced.jpegBackground.title")
-        Spacer()
-        AnchoredColorWell(
-          color: jpegBackgroundColorBinding,
-          accessibilityLabel: String(localized: "advanced.jpegBackground.title"),
-          panelTrailingClearance: 70
+        Toggle(
+          "advanced.metadata.removeLocation",
+          isOn: $preferencesStore.preferences.removesLocationMetadata
         )
-        .frame(width: 30, height: 24)
-        .help("advanced.jpegBackground.help")
-        .accessibilityLabel("advanced.jpegBackground.title")
-        Text(preferencesStore.preferences.jpegBackgroundColor.hexString)
-          .monospacedDigit()
-          .foregroundStyle(.secondary)
+        .toggleStyle(.checkbox)
+        .disabled(!preferencesStore.preferences.preservesMetadata)
+        .frame(maxWidth: .infinity, alignment: .leading)
+
+        Divider().frame(height: 28)
+
+        HStack(spacing: 8) {
+          Text("advanced.jpegBackground.title")
+          Spacer(minLength: 0)
+          AnchoredColorWell(
+            color: jpegBackgroundColorBinding,
+            accessibilityLabel: String(localized: "advanced.jpegBackground.title"),
+            panelTrailingClearance: 70
+          )
+          .frame(width: 30, height: 24)
+          .help("advanced.jpegBackground.help")
+          .accessibilityLabel("advanced.jpegBackground.title")
+          Text(preferencesStore.preferences.jpegBackgroundColor.hexString)
+            .font(.caption)
+            .monospacedDigit()
+            .foregroundStyle(.secondary)
+        }
+        .disabled(preferencesStore.preferences.outputFormat != .jpeg)
+        .frame(maxWidth: .infinity)
       }
-      .padding(.vertical, 10)
+      .font(.callout)
+      .padding(.vertical, 14)
     }
-    .padding(.horizontal, 14)
-    .background(.quinary.opacity(0.35))
-    .overlay {
-      Rectangle()
-        .stroke(.quaternary, lineWidth: 1)
-    }
-    .padding(.bottom, 12)
   }
 
   private var actionBar: some View {
@@ -612,57 +594,13 @@ struct ContentView: View {
   }
 
   private var resultsView: some View {
-    VStack(alignment: .leading, spacing: 16) {
-      Label(
-        "results.title",
-        systemImage: viewModel.failedResults.isEmpty
-          ? "checkmark.circle.fill" : "exclamationmark.triangle.fill"
-      )
-      .font(.title2.weight(.semibold))
-      .foregroundStyle(viewModel.failedResults.isEmpty ? .green : .orange)
-
-      Text(
-        String.localizedStringWithFormat(
-          String(localized: "results.summary.format"),
-          viewModel.successfulResults.count,
-          viewModel.failedResults.count
-        ))
-
-      if !viewModel.failedResults.isEmpty {
-        List(viewModel.failedResults) { result in
-          VStack(alignment: .leading, spacing: 3) {
-            Text(result.sourceURL.lastPathComponent)
-              .fontWeight(.medium)
-            Text(result.message ?? String(localized: "processing.error.generic"))
-              .font(.callout)
-              .foregroundStyle(.secondary)
-          }
-        }
-        .frame(minHeight: 140)
-      }
-
-      HStack {
-        if !viewModel.successfulResults.isEmpty {
-          Button("results.reveal") {
-            viewModel.revealSuccessfulOutputs()
-          }
-        }
-        Spacer()
-        Button("results.clearList") {
-          viewModel.clearSelectionAndDismissResults()
-        }
-        .help("results.clearList.help")
-        .accessibilityHint("results.clearList.help")
-
-        Button("action.done") {
-          viewModel.isShowingResults = false
-        }
-        .keyboardShortcut(.defaultAction)
-      }
-    }
-    .padding(24)
-    .frame(width: 520)
-    .frame(minHeight: 220)
+    ProcessingResultsView(
+      summary: viewModel.resultSummary,
+      failedResults: viewModel.failedResults,
+      onReveal: viewModel.revealSuccessfulOutputs,
+      onClear: viewModel.clearSelectionAndDismissResults,
+      onDismiss: { viewModel.isShowingResults = false }
+    )
   }
 
   private func dimensionField(
@@ -752,15 +690,9 @@ struct ContentView: View {
     return (path as NSString).abbreviatingWithTildeInPath
   }
 
-  private var preferredWindowHeight: CGFloat {
-    let contentHeight: CGFloat = isAdvancedExpanded ? 840 : 650
-    let processingHeight: CGFloat = viewModel.isProcessing ? 48 : 0
-    return contentHeight + processingHeight + 38
-  }
-
   private var suffixExample: String {
     let suffix = ImageResizeService.sanitizedSuffix(
-      preferencesStore.preferences.filenameSuffix
+      preferencesStore.preferences.effectiveFilenameSuffix
     )
     return String.localizedStringWithFormat(
       String(localized: "advanced.suffix.example.format"),
@@ -778,6 +710,9 @@ struct ContentView: View {
     if viewModel.selectedImages.isEmpty {
       return "processing.status.empty"
     }
+    if preferencesStore.preferences.selectedPreset == .original {
+      return "processing.status.original"
+    }
     return preferencesStore.preferences.allowsUpscaling
       ? "processing.status.ready"
       : "processing.status.readyNoUpscale"
@@ -791,14 +726,8 @@ struct ContentView: View {
   }
 
   private var appearanceHelpText: String {
-    switch preferencesStore.preferences.appearanceMode {
-    case .system:
-      return String(localized: "appearance.system.help")
-    case .light:
-      return String(localized: "appearance.light.help")
-    case .dark:
-      return String(localized: "appearance.dark.help")
-    }
+    preferencesStore.preferences.appearanceMode == .light
+      ? String(localized: "appearance.light.help") : String(localized: "appearance.dark.help")
   }
 
   private var aspectRatioHelpText: String {
@@ -819,37 +748,9 @@ struct ContentView: View {
       : String(localized: "quality.mode.manual.help")
   }
 
-  private var advancedToggleHelpText: String {
-    isAdvancedExpanded
-      ? String(localized: "advanced.collapse.help")
-      : String(localized: "advanced.expand.help")
-  }
-
-  private func toggleAdvancedSection() {
-    if isAdvancedExpanded {
-      withAnimation(.easeOut(duration: 0.16)) {
-        isAdvancedContentVisible = false
-      }
-      DispatchQueue.main.asyncAfter(deadline: .now() + 0.16) {
-        guard !isAdvancedContentVisible else { return }
-        isAdvancedExpanded = false
-      }
-      return
-    }
-
-    isAdvancedExpanded = true
-    isAdvancedContentVisible = false
-    DispatchQueue.main.async {
-      withAnimation(.easeIn(duration: 0.18)) {
-        isAdvancedContentVisible = true
-      }
-    }
-  }
-
   private func presetAccessibilityName(_ preset: ResizePreset) -> String {
-    guard let dimensions = preset.dimensions else {
-      return String(localized: "preset.custom")
-    }
+    if preset == .original { return String(localized: "preset.original") }
+    guard let dimensions = preset.dimensions else { return String(localized: "preset.custom") }
     return "\(dimensions.width) × \(dimensions.height)"
   }
 
@@ -857,10 +758,6 @@ struct ContentView: View {
     var preferences = preferencesStore.preferences
     preferences.selectPreset(preset)
     preferencesStore.preferences = preferences
-  }
-
-  private func cycleAppearance() {
-    preferencesStore.preferences.appearanceMode = preferencesStore.preferences.appearanceMode.next
   }
 
   private func dismissActiveModal() {
@@ -873,10 +770,6 @@ struct ContentView: View {
     } else if isShowingAbout {
       isShowingAbout = false
     }
-  }
-
-  private func closeMainWindow() {
-    mainWindow?.performClose(nil)
   }
 
   private func minimizeMainWindow() {
@@ -909,6 +802,134 @@ struct ContentView: View {
   private func startProcessing() {
     preferencesStore.flush()
     viewModel.startProcessing(preferences: preferencesStore.preferences)
+  }
+}
+
+struct ProcessingResultsView: View {
+  let summary: BatchResultSummary
+  let failedResults: [ResizeResult]
+  let onReveal: () -> Void
+  let onClear: () -> Void
+  let onDismiss: () -> Void
+
+  var body: some View {
+    VStack(spacing: 0) {
+      VStack(alignment: .leading, spacing: 20) {
+        HStack(alignment: .top, spacing: 16) {
+          Image(systemName: statusIcon)
+            .font(.system(size: 30, weight: .medium))
+            .foregroundStyle(summary.status == .completed ? Color.accentColor : Color.orange)
+            .frame(width: 36, height: 36)
+            .accessibilityHidden(true)
+
+          VStack(alignment: .leading, spacing: 10) {
+            Text(titleKey)
+              .font(.title3.weight(.semibold))
+              .fixedSize(horizontal: false, vertical: true)
+              .accessibilityAddTraits(.isHeader)
+
+            if summary.successCount > 0 {
+              Text(
+                String.localizedStringWithFormat(
+                  String(localized: "results.success.format"), summary.successCount
+                )
+              )
+              .foregroundStyle(.secondary)
+              .fixedSize(horizontal: false, vertical: true)
+            }
+            if summary.failureCount > 0 {
+              Text(
+                String.localizedStringWithFormat(
+                  String(localized: "results.failure.format"), summary.failureCount
+                )
+              )
+              .foregroundStyle(.secondary)
+              .fixedSize(horizontal: false, vertical: true)
+            }
+            if summary.remainingCount > 0 {
+              Text(
+                String.localizedStringWithFormat(
+                  String(localized: "results.remaining.format"), summary.remainingCount
+                )
+              )
+              .foregroundStyle(.secondary)
+            }
+          }
+        }
+
+        if !failedResults.isEmpty {
+          ScrollView {
+            VStack(alignment: .leading, spacing: 12) {
+              ForEach(failedResults) { result in
+                VStack(alignment: .leading, spacing: 4) {
+                  Text(result.sourceURL.lastPathComponent)
+                    .fontWeight(.medium)
+                    .lineLimit(1)
+                    .truncationMode(.middle)
+                    .help(result.sourceURL.lastPathComponent)
+                  Text(result.message ?? String(localized: "processing.error.generic"))
+                    .font(.callout)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+              }
+            }
+            .padding(12)
+          }
+          .frame(height: min(CGFloat(failedResults.count) * 76, 180))
+          .background(.quinary)
+        }
+
+        HStack(spacing: 12) {
+          if summary.successCount > 0 {
+            Button(action: onReveal) {
+              Label("results.reveal", systemImage: "folder")
+                .padding(.vertical, 6)
+            }
+            .keyboardShortcut(.defaultAction)
+          }
+          Button(action: onClear) {
+            Label("results.clearList", systemImage: "xmark")
+              .padding(.vertical, 6)
+          }
+          .help("results.clearList.help")
+          .accessibilityHint("results.clearList.help")
+          Spacer(minLength: 0)
+        }
+        .buttonStyle(.borderedProminent)
+        .controlSize(.large)
+      }
+      .padding(24)
+
+      Divider()
+
+      HStack {
+        Spacer()
+        Button("action.done", action: onDismiss)
+          .keyboardShortcut(.cancelAction)
+      }
+      .padding(.horizontal, 24)
+      .padding(.vertical, 14)
+    }
+    .frame(width: 560)
+  }
+
+  private var titleKey: LocalizedStringKey {
+    switch summary.status {
+    case .completed: return "results.title"
+    case .completedWithErrors: return "results.partial.title"
+    case .failed: return "results.failed.title"
+    case .cancelled: return "results.cancelled.title"
+    }
+  }
+
+  private var statusIcon: String {
+    switch summary.status {
+    case .completed: return "checkmark.circle"
+    case .completedWithErrors, .failed: return "exclamationmark.triangle"
+    case .cancelled: return "pause.circle"
+    }
   }
 }
 
@@ -969,6 +990,7 @@ struct ColorPanelPositioning {
 }
 
 private struct AnchoredColorWell: NSViewRepresentable {
+  @Environment(\.isEnabled) private var isEnabled
   @Binding var color: NSColor
   let accessibilityLabel: String
   let panelTrailingClearance: CGFloat
@@ -981,6 +1003,7 @@ private struct AnchoredColorWell: NSViewRepresentable {
     let colorWell = PositionedColorWell()
     colorWell.color = color
     colorWell.isBordered = true
+    colorWell.updateEnabledState(isEnabled)
     colorWell.panelTrailingClearance = panelTrailingClearance
     colorWell.target = context.coordinator
     colorWell.action = #selector(Coordinator.handleColorChange(_:))
@@ -992,8 +1015,13 @@ private struct AnchoredColorWell: NSViewRepresentable {
     context.coordinator.parent = self
     colorWell.setAccessibilityLabel(accessibilityLabel)
     colorWell.panelTrailingClearance = panelTrailingClearance
+    colorWell.updateEnabledState(isEnabled)
     guard colorWell.color != color else { return }
     colorWell.color = color
+  }
+
+  static func dismantleNSView(_ colorWell: PositionedColorWell, coordinator: Coordinator) {
+    colorWell.dismissColorPanel()
   }
 
   final class Coordinator: NSObject {
@@ -1009,20 +1037,103 @@ private struct AnchoredColorWell: NSViewRepresentable {
   }
 }
 
-private final class PositionedColorWell: NSColorWell {
+final class PositionedColorWell: NSColorWell {
   var panelTrailingClearance: CGFloat = 0
+  private var mouseMonitor: Any?
+  private var notificationObservers: [NSObjectProtocol] = []
+
+  func updateEnabledState(_ enabled: Bool) {
+    isEnabled = enabled
+    if !enabled {
+      dismissColorPanel()
+    }
+  }
 
   override func activate(_ exclusive: Bool) {
+    guard isEnabled else { return }
     let colorPanel = NSColorPanel.shared
     colorPanel.showsAlpha = false
     colorPanel.level = .floating
     position(colorPanel)
     super.activate(exclusive)
+    startMonitoringDismissal()
 
     DispatchQueue.main.async { [weak self, weak colorPanel] in
-      guard let self, let colorPanel else { return }
+      guard let self, self.isActive, let colorPanel else { return }
       self.position(colorPanel)
     }
+  }
+
+  override func deactivate() {
+    stopMonitoringDismissal()
+    super.deactivate()
+  }
+
+  func dismissColorPanel() {
+    let ownsPanel = isActive
+    deactivate()
+    if ownsPanel {
+      NSColorPanel.shared.orderOut(nil)
+    }
+  }
+
+  func handleMouseDown(_ event: NSEvent) -> NSEvent? {
+    guard isActive else { return event }
+    let colorPanel = NSColorPanel.shared
+    var eventWindow = event.window
+    while let currentWindow = eventWindow {
+      if currentWindow === colorPanel { return event }
+      eventWindow = currentWindow.parent
+    }
+
+    let clicksColorWell =
+      event.window === window
+      && bounds.contains(convert(event.locationInWindow, from: nil))
+    dismissColorPanel()
+    // Consume the swatch click so it cannot immediately reopen the panel.
+    return clicksColorWell ? nil : event
+  }
+
+  private func startMonitoringDismissal() {
+    stopMonitoringDismissal()
+    mouseMonitor = NSEvent.addLocalMonitorForEvents(
+      matching: [.leftMouseDown, .rightMouseDown, .otherMouseDown]
+    ) { [weak self] event in
+      guard let self else { return event }
+      return self.handleMouseDown(event)
+    }
+
+    let center = NotificationCenter.default
+    notificationObservers.append(
+      center.addObserver(
+        forName: NSApplication.didResignActiveNotification, object: NSApplication.shared,
+        queue: .main
+      ) { [weak self] _ in
+        MainActor.assumeIsolated { self?.dismissColorPanel() }
+      }
+    )
+    notificationObservers.append(
+      center.addObserver(forName: NSWindow.willCloseNotification, object: nil, queue: .main) {
+        [weak self] notification in
+        MainActor.assumeIsolated {
+          guard let self, let closedWindow = notification.object as? NSWindow else { return }
+          if closedWindow === self.window || closedWindow === NSColorPanel.shared {
+            self.dismissColorPanel()
+          }
+        }
+      }
+    )
+  }
+
+  private func stopMonitoringDismissal() {
+    if let mouseMonitor {
+      NSEvent.removeMonitor(mouseMonitor)
+      self.mouseMonitor = nil
+    }
+    for observer in notificationObservers {
+      NotificationCenter.default.removeObserver(observer)
+    }
+    notificationObservers.removeAll()
   }
 
   private func position(_ colorPanel: NSColorPanel) {

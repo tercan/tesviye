@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta
       name="description"
-      content="Tesviye is a native macOS app for resizing one or many images with presets, format conversion, quality control, and Finder Quick Actions."
+      content="Resize images or convert formats while keeping their original dimensions. Tesviye brings JPEG, PNG, WebP, and Finder Quick Actions to macOS."
     >
     <meta name="theme-color" content="#ffffff" data-color-light="#ffffff" data-color-dark="#0d141d">
     <meta name="referrer" content="strict-origin-when-cross-origin">
@@ -14,7 +14,7 @@
       content="default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; upgrade-insecure-requests"
     >
     <script src="script.js"></script>
-    <title>Tesviye — Native Image Resizing for macOS</title>
+    <title>Tesviye — Image Resizing and Conversion for macOS</title>
     <link rel="canonical" href="https://tercan.github.io/tesviye/">
     <link rel="alternate" hreflang="en" href="https://tercan.github.io/tesviye/">
     <link rel="alternate" hreflang="tr" href="https://tercan.github.io/tesviye/tr/">
@@ -24,19 +24,19 @@
     <link rel="stylesheet" href="style.css">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Tesviye">
-    <meta property="og:title" content="Tesviye — Native Image Resizing for macOS">
+    <meta property="og:title" content="Tesviye — Image Resizing and Conversion for macOS">
     <meta
       property="og:description"
-      content="Resize single images or entire batches with presets, format conversion, quality control, and a Finder Quick Action."
+      content="Resize images, keep original dimensions for format conversion, and process batches with Finder Quick Actions."
     >
     <meta property="og:url" content="https://tercan.github.io/tesviye/">
     <meta property="og:image" content="https://tercan.github.io/tesviye/assets/tesviye-icon.png">
     <meta property="og:image:alt" content="Tesviye application icon">
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="Tesviye — Native Image Resizing for macOS">
+    <meta name="twitter:title" content="Tesviye — Image Resizing and Conversion for macOS">
     <meta
       name="twitter:description"
-      content="A focused, private, and native macOS workflow for resizing images."
+      content="A focused, private macOS workflow for resizing images and converting JPEG, PNG, and WebP files."
     >
     <meta name="twitter:image" content="https://tercan.github.io/tesviye/assets/tesviye-icon.png">
     <script type="application/ld+json">
@@ -47,11 +47,11 @@
         "description": "A native macOS application for resizing and converting one or many images.",
         "applicationCategory": "MultimediaApplication",
         "operatingSystem": "macOS 14 or later",
-        "softwareVersion": "1.0.0",
+        "softwareVersion": "1.2.1",
         "isAccessibleForFree": true,
         "license": "https://github.com/tercan/tesviye/blob/main/LICENSE",
         "codeRepository": "https://github.com/tercan/tesviye",
-        "downloadUrl": "https://github.com/tercan/tesviye/archive/refs/tags/v1.0.0.zip",
+        "downloadUrl": "https://github.com/tercan/tesviye/archive/refs/heads/main.zip",
         "image": "https://tercan.github.io/tesviye/assets/tesviye-icon.png",
         "author": {
           "@type": "Person",
@@ -146,14 +146,14 @@
         <div class="container hero-grid">
           <div class="hero-copy">
             <p class="eyebrow">macOS image resizer</p>
-            <h1 id="hero-title">Resize images without breaking your flow.</h1>
+            <h1 id="hero-title">Resize or convert images without breaking your flow.</h1>
             <p class="hero-lead">
               Tesviye turns repetitive image resizing into one focused step. Work with a single image or a full
               batch, choose the output you need, and keep everything on your Mac.
             </p>
             <div class="hero-actions">
-              <a class="button" href="https://github.com/tercan/tesviye/tree/v1.0.0">
-                View version 1.0.0
+              <a class="button" href="https://github.com/tercan/tesviye/tree/main">
+                View version 1.2.1
                 <svg viewBox="0 0 24 24" aria-hidden="true">
                   <path fill="currentColor" d="m13 5 7 7-7 7-1.4-1.4 4.6-4.6H4v-2h12.2l-4.6-4.6L13 5Z"></path>
                 </svg>
@@ -177,20 +177,32 @@
           </div><!-- /.hero-copy -->
 
           <figure class="app-screenshot" aria-labelledby="screenshot-caption">
-            <picture class="app-screenshot-picture">
-              <source type="image/webp" srcset="assets/tesviye-image-resizer-screenshoot.webp">
+            <picture class="app-screenshot-picture app-screenshot-picture--light">
+              <source type="image/webp" srcset="assets/tesviye-image-resizer-screenshot-light.webp">
               <img
                 class="app-screenshot-image"
-                src="assets/tesviye-image-resizer-screenshoot.png"
-                width="740"
-                height="878"
-                alt="Tesviye application window showing image size, format, quality, and advanced output settings."
+                src="assets/tesviye-image-resizer-screenshot-light.png"
+                width="742"
+                height="838"
+                alt="Tesviye image conversion settings in light appearance."
+                decoding="async"
+                fetchpriority="high"
+              >
+            </picture><!-- /.app-screenshot-picture -->
+            <picture class="app-screenshot-picture app-screenshot-picture--dark">
+              <source type="image/webp" srcset="assets/tesviye-image-resizer-screenshot-dark.webp">
+              <img
+                class="app-screenshot-image"
+                src="assets/tesviye-image-resizer-screenshot-dark.png"
+                width="742"
+                height="838"
+                alt="Tesviye image conversion settings in dark appearance."
                 decoding="async"
                 fetchpriority="high"
               >
             </picture><!-- /.app-screenshot-picture -->
             <figcaption class="visually-hidden" id="screenshot-caption">
-              The Tesviye image resizing interface in dark mode.
+              The Tesviye interface follows the website appearance.
             </figcaption>
           </figure><!-- /.app-screenshot -->
         </div><!-- /.hero-grid -->
@@ -228,7 +240,7 @@
                 <svg viewBox="0 0 24 24"><path fill="currentColor" d="M3 4h18v16H3V4Zm2 2v12h14V6H5Zm2 2h4v4H7V8Zm6 0h4v2h-4V8Zm0 4h4v2h-4v-2ZM7 14h4v2H7v-2Z"></path></svg>
               </span>
               <h3>Useful presets</h3>
-              <p>Choose common HD, square, and social sizes or enter precise pixel dimensions.</p>
+              <p>Keep original dimensions, choose an HD, square, or social size, or enable Custom Size to enter exact values.</p>
             </article><!-- /.feature-card -->
 
             <article class="feature-card">
@@ -251,8 +263,8 @@
               <span class="feature-icon" aria-hidden="true">
                 <svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 3a9 9 0 1 0 0 18 7 7 0 0 1 0-14V3Zm-1.8 2.3A9 9 0 0 0 12 23a11 11 0 1 1 0-22v2a9 9 0 0 0-1.8.2Z"></path></svg>
               </span>
-              <h3>Light, dark, or system</h3>
-              <p>Use the appearance that fits your desktop. The selected mode is saved automatically.</p>
+              <h3>Light or dark appearance</h3>
+              <p>Switch between light and dark with one icon. Your appearance preference is saved automatically.</p>
             </article><!-- /.feature-card -->
           </div><!-- /.feature-grid -->
         </div><!-- /.container -->
@@ -276,12 +288,12 @@
             <li class="workflow-step">
               <span class="step-number">02</span>
               <h3>Choose the output</h3>
-              <p>Set dimensions, aspect ratio behavior, format, quality mode, suffix, and destination.</p>
+              <p>Keep the original size or set new dimensions, then choose the format, quality, optional suffix, and destination.</p>
             </li><!-- /.workflow-step -->
             <li class="workflow-step">
               <span class="step-number">03</span>
               <h3>Review the result</h3>
-              <p>Track batch progress, see individual outcomes, and clear the entire selection in one action.</p>
+              <p>Review the completion summary, reveal the output files in Finder, or clear the selected image list.</p>
             </li><!-- /.workflow-step -->
           </ol><!-- /.workflow-grid -->
         </div><!-- /.container -->
@@ -293,7 +305,7 @@
             <p class="eyebrow">Output control</p>
             <h2 id="formats-title">Resize and export as JPEG, PNG, or WebP.</h2>
             <p class="section-description">
-              Keep the source format or convert during resizing. Automatic quality balances output size by default; manual control remains one click away.
+              Convert formats without changing dimensions, or resize and convert together. Automatic quality balances output size; manual control remains one click away.
             </p>
           </div><!-- /.section-heading -->
           <div class="format-grid">
