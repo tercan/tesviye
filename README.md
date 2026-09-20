@@ -14,7 +14,7 @@ workflow.
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/assets/tesviye-image-resizer-screenshot-dark.png">
   <source media="(prefers-color-scheme: light)" srcset="docs/assets/tesviye-image-resizer-screenshot-light.png">
-  <img src="docs/assets/tesviye-image-resizer-screenshot-light.png" width="742" height="838" alt="Tesviye image resizing and format conversion interface.">
+  <img src="docs/assets/tesviye-image-resizer-screenshot-light.png" width="1480" height="1352" alt="Current Tesviye interface in English, with Keep Size, Custom Size, and format conversion controls.">
 </picture>
 
 ## Features

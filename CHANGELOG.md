@@ -9,7 +9,7 @@ All notable changes to this project are documented in this file. The format is b
 ### Changed
 
 - Replaced separate light and dark controls with a single icon that toggles between the two appearances, with localized action labels.
-- Refreshed the English and Turkish presentation pages and README with light/dark screenshots and descriptions of the current conversion workflow.
+- Refreshed the English and Turkish presentation pages and README with up-to-date English light/dark screenshots and descriptions of the current conversion workflow.
 - Updated screenshot references and asset budgets to validate both appearances and remove obsolete image paths.
 
 ## [1.2.0] - 2026-09-19 23:49

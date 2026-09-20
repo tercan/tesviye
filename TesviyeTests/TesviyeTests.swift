@@ -235,6 +235,16 @@ final class TesviyeTests: XCTestCase {
     let resultSize = try renderView(resultView, name: "results-42")
     XCTAssertEqual(resultSize.width, 560, accuracy: 1)
     XCTAssertLessThan(resultSize.height, original.height)
+
+    store.preferences = UserPreferences(appearanceMode: .light)
+    store.preferences.selectPreset(.custom)
+    for mode in AppearanceMode.allCases {
+      store.preferences.appearanceMode = mode
+      _ = try renderView(
+        ContentView().environmentObject(store).environmentObject(model),
+        name: "presentation-\(mode.rawValue)", colorScheme: mode == .dark ? .dark : .light
+      )
+    }
   }
 
   func testColorPanelDisablingDetachesActiveWellAndPreventsReopening() {
@@ -315,7 +325,7 @@ final class TesviyeTests: XCTestCase {
   ) throws -> CGSize {
     let view = NSHostingView(
       rootView: content.background(Color(nsColor: .windowBackgroundColor))
-        .environment(\.locale, Locale(identifier: "tr"))
+        .environment(\.locale, Locale.current)
         .environment(\.colorScheme, colorScheme)
     )
     view.appearance = NSAppearance(named: colorScheme == .dark ? .darkAqua : .aqua)
