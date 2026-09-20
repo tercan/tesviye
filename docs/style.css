@@ -287,6 +287,19 @@ section[id] {
   gap: var(--space-sm);
 }
 
+.download-details {
+  display: grid;
+  gap: var(--space-xs);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.download-details a {
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-underline-offset: var(--space-2xs);
+}
+
 .hero-facts {
   display: grid;
   padding-top: var(--space-md);

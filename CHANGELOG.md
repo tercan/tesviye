@@ -4,7 +4,11 @@ All notable changes to this project are documented in this file. The format is b
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project follows
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.2.1] - 2026-09-20 00:16
+## [1.2.1] - 2026-09-20 03:33
+
+### Added
+
+- Downloadable universal macOS DMG in the repository, GitHub Pages, and GitHub Releases, with SHA-256 checksums, version-matched source access, and installation/signing information.
 
 ### Changed
 
@@ -94,4 +98,5 @@ All notable changes to this project are documented in this file. The format is b
 - Custom output folder access is persisted with security-scoped bookmarks, and file replacement requires explicit
   user intent.
 
+[1.2.1]: https://github.com/tercan/tesviye/compare/v1.0.0...v1.2.1
 [1.0.0]: https://github.com/tercan/tesviye/tree/v1.0.0

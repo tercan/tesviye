@@ -1,5 +1,6 @@
 import { existsSync, readFileSync, statSync } from "node:fs";
-import { dirname, extname, resolve } from "node:path";
+import { createHash } from "node:crypto";
+import { dirname, resolve } from "node:path";
 import { gzipSync } from "node:zlib";
 
 /**
@@ -56,7 +57,7 @@ function resolveLocalReference(htmlPath, reference) {
   }
 
   const candidate = resolve(dirname(htmlPath), cleanReference);
-  if (cleanReference.endsWith("/") || extname(candidate) === "") {
+  if (cleanReference.endsWith("/") || (existsSync(candidate) && statSync(candidate).isDirectory())) {
     return resolve(candidate, "index.html");
   }
 
@@ -238,6 +239,7 @@ function validateScreenshotsAndRelease() {
     "Xcode targets must share one application version.",
   );
   const [version] = versions;
+  validateDownload(version, readme);
   assertCondition(
     readme.includes(`Version ${version}`),
     "README.md: application version is not synchronized.",
@@ -288,6 +290,33 @@ function validateScreenshotsAndRelease() {
         `${htmlPath}: obsolete screenshot reference remains.`,
       );
     }
+  }
+}
+
+function validateDownload(version, readme) {
+  const filename = `Tesviye-${version}-universal.dmg`;
+  const publicUrl = `https://tercan.github.io/tesviye/downloads/${filename}`;
+  const sourceUrl = `https://github.com/tercan/tesviye/archive/refs/tags/v${version}.zip`;
+  const packagePath = resolve(DOCUMENTS_DIRECTORY, "downloads", filename);
+  const checksumPath = resolve(DOCUMENTS_DIRECTORY, "downloads/SHA256SUMS");
+  const versionedChecksumPath = `${packagePath}.sha256`;
+  assertCondition(existsSync(packagePath), `Missing public DMG: ${filename}`);
+  assertCondition(existsSync(checksumPath), "Public SHA256SUMS is missing.");
+  if (!existsSync(packagePath) || !existsSync(checksumPath)) return;
+
+  const packageBytes = readFileSync(packagePath);
+  const checksum = createHash("sha256").update(packageBytes).digest("hex");
+  assertCondition(packageBytes.length > 0 && packageBytes.length < 50 * 1024 * 1024, "Public DMG is empty or exceeds the 50 MB repository budget.");
+  assertCondition(readText(checksumPath).trim() === `${checksum}  ${filename}`, "Public DMG SHA-256 does not match SHA256SUMS.");
+  assertCondition(existsSync(versionedChecksumPath) && readText(versionedChecksumPath).trim() === `${checksum}  ${filename}`, "Versioned DMG checksum is missing or invalid.");
+  assertCondition(readme.includes(publicUrl) && readme.includes(sourceUrl), "README download/source links are not version-matched.");
+
+  for (const htmlPath of HTML_FILES) {
+    const html = readText(htmlPath);
+    assertCondition(html.includes(`downloads/${filename}" download="${filename}"`), `${htmlPath}: direct DMG download link is missing.`);
+    assertCondition(html.includes(`"downloadUrl": "${publicUrl}"`), `${htmlPath}: structured downloadUrl does not point to the DMG.`);
+    assertCondition(html.includes(sourceUrl), `${htmlPath}: matching source archive link is missing.`);
+    assertCondition(html.includes('id="download-notice"'), `${htmlPath}: signing information is missing.`);
   }
 }
 

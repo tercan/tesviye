@@ -7,7 +7,31 @@ useful presets, format conversion, quality control, safe output naming, and a Fi
 workflow.
 
 [Website](https://tercan.github.io/tesviye/) · [Türkçe tanıtım](https://tercan.github.io/tesviye/tr/) ·
-[Version 1.2.1](https://github.com/tercan/tesviye/tree/main)
+[Version 1.2.1](https://github.com/tercan/tesviye/tree/v1.2.1)
+
+## Download and install
+
+**[Download Tesviye 1.2.1 for macOS (Tesviye-1.2.1-universal.dmg, 6 MB)](https://tercan.github.io/tesviye/downloads/Tesviye-1.2.1-universal.dmg)**
+
+macOS 14 or later is required. The universal app supports Apple Silicon and Intel Macs.
+
+1. Quit any older running copy of Tesviye.
+2. Open the DMG and drag **Tesviye.app** to **Applications**.
+3. Eject the disk image and open Tesviye from Applications.
+
+This package is **ad-hoc signed and not notarized by Apple**. macOS may block its first launch.
+Only if you trust the download, follow [Apple’s opening guidance](https://support.apple.com/en-us/102445)
+for an application-specific approval. The package does not require disabling Gatekeeper globally.
+
+[GitHub Release and assets](https://github.com/tercan/tesviye/releases/tag/v1.2.1) ·
+[SHA-256 checksums](https://tercan.github.io/tesviye/downloads/Tesviye-1.2.1-universal.dmg.sha256) ·
+[Matching v1.2.1 source archive](https://github.com/tercan/tesviye/archive/refs/tags/v1.2.1.zip)
+
+To verify a downloaded copy, place `Tesviye-1.2.1-universal.dmg.sha256` beside the DMG and run:
+
+```bash
+shasum -a 256 -c Tesviye-1.2.1-universal.dmg.sha256
+```
 
 ## Screenshots
 
@@ -33,7 +57,7 @@ workflow.
 - Choose a saved light or dark theme with one appearance toggle.
 - Review per-file results and clear the selected image list in one action.
 
-## Requirements
+## Build requirements
 
 - macOS 14 or later
 - Xcode with the macOS SDK; the current local validation uses Xcode 27
