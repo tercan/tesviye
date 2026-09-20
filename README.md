@@ -38,7 +38,7 @@ shasum -a 256 -c Tesviye-1.2.1-universal.dmg.sha256
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/assets/tesviye-image-resizer-screenshot-dark.png">
   <source media="(prefers-color-scheme: light)" srcset="docs/assets/tesviye-image-resizer-screenshot-light.png">
-  <img src="docs/assets/tesviye-image-resizer-screenshot-light.png" width="1480" height="1352" alt="Current Tesviye interface in English, with Keep Size, Custom Size, and format conversion controls.">
+  <img src="docs/assets/tesviye-image-resizer-screenshot-light.png" width="740" alt="Current Tesviye interface in English, with Keep Size, Custom Size, and format conversion controls.">
 </picture>
 
 ## Features

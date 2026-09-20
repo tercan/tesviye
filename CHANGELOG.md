@@ -16,6 +16,10 @@ All notable changes to this project are documented in this file. The format is b
 - Refreshed the English and Turkish presentation pages and README with up-to-date English light/dark screenshots and descriptions of the current conversion workflow.
 - Updated screenshot references and asset budgets to validate both appearances and remove obsolete image paths.
 
+### Fixed
+
+- Preserved the README screenshot's natural aspect ratio when GitHub scales it to fit desktop and mobile layouts.
+
 ## [1.2.0] - 2026-09-19 23:49
 
 ### Added
